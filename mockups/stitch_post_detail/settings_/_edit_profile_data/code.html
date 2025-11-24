@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Account Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#4A90E2", // From user prompt
+            "background-light": "#F7F8FA",
+            "background-dark": "#101c22",
+            "surface-light": "#FFFFFF",
+            "surface-dark": "#1b2327",
+            "text-primary-light": "#333333",
+            "text-primary-dark": "#f0f0f0",
+            "text-secondary-light": "#888888",
+            "text-secondary-dark": "#9cb0ba",
+            "destructive": "#D0021B",
+            "destructive-dark": "#e53e3e",
+            "border-light": "#e0e0e0",
+            "border-dark": "#3b4c54"
+          },
+          fontFamily: {
+            "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+          },
+          borderRadius: {
+            "DEFAULT": "0.5rem",
+            "lg": "0.75rem",
+            "xl": "1rem",
+            "full": "9999px"
+          },
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-10 flex items-center bg-background-light/80 dark:bg-background-dark/80 p-4 pb-2 justify-between backdrop-blur-sm border-b border-border-light dark:border-border-dark">
+<div class="flex size-10 shrink-0 items-center justify-start text-text-primary-light dark:text-text-primary-dark">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</div>
+<h2 class="text-text-primary-light dark:text-text-primary-dark text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">Settings</h2>
+<div class="flex w-10 items-center justify-end">
+<p class="text-primary text-base font-bold leading-normal tracking-[0.015em] shrink-0">Save</p>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex flex-col gap-6 px-4 py-6">
+<!-- Profile Header -->
+<div class="flex w-full flex-col gap-4 items-center">
+<div class="relative">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-28 w-28" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBj7iV0SY4w6aWVH8UodaqyXdtSKHeCmbe4z82OxpMGX_-CQ1AmW64F-DkfQcTMX92dkGJE4v-xhkmtiKIq5O4AXT_bW9kD4QReJVcBt_Nb87bM5td2FThKgSWVc9OsGQ_zd3F_DlIfZ-PaM6i9O6rQDrjyDzld97PJw_-APs6ylJ-IDk6Q27Z0qWomw_0mPVFhEdOLuBuWFbdN5Pgc-SnKSAWxA5NIOwpWAKXY8Np3kWRYr0T4j193p1SxqOfK1K0nOBsIxek1PHM");'></div>
+<button class="absolute bottom-0 right-0 flex h-9 w-9 cursor-pointer items-center justify-center overflow-hidden rounded-full bg-primary text-white">
+<span class="material-symbols-outlined text-xl">edit</span>
+</button>
+</div>
+</div>
+<!-- Profile Section -->
+<section>
+<h3 class="text-text-primary-light dark:text-text-primary-dark text-lg font-bold leading-tight tracking-[-0.015em] pb-2">Profile</h3>
+<div class="flex flex-col gap-4 bg-surface-light dark:bg-surface-dark rounded-xl p-4">
+<label class="flex flex-col">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium leading-normal pb-2">Full Name</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-primary-light dark:text-text-primary-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary h-12 placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark px-4 text-base font-normal leading-normal" value="Jane Doe"/>
+</label>
+<label class="flex flex-col">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium leading-normal pb-2">Username</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-primary-light dark:text-text-primary-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary h-12 placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark px-4 text-base font-normal leading-normal" value="@janedoe"/>
+</label>
+<label class="flex flex-col">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium leading-normal pb-2">Bio</p>
+<textarea class="form-textarea flex w-full min-w-0 flex-1 resize-y overflow-hidden rounded-lg text-text-primary-light dark:text-text-primary-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary min-h-[80px] placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark p-4 text-base font-normal leading-normal">Digital creator and coffee enthusiast.</textarea>
+</label>
+</div>
+</section>
+<!-- Account Section -->
+<section>
+<h3 class="text-text-primary-light dark:text-text-primary-dark text-lg font-bold leading-tight tracking-[-0.015em] pb-2">Account</h3>
+<div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl p-4 divide-y divide-border-light dark:divide-border-dark">
+<label class="flex flex-col pb-4">
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-medium leading-normal pb-2">Email</p>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-text-primary-light dark:text-text-primary-dark focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark focus:border-primary h-12 placeholder:text-text-secondary-light dark:placeholder:text-text-secondary-dark px-4 text-base font-normal leading-normal" value="jane.doe@example.com"/>
+</label>
+<a class="flex items-center py-4 text-text-primary-light dark:text-text-primary-dark" href="#">
+<span class="material-symbols-outlined mr-4 text-text-secondary-light dark:text-text-secondary-dark">lock_reset</span>
+<span class="flex-1 text-base font-medium">Change Password</span>
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- Privacy Section -->
+<section>
+<h3 class="text-text-primary-light dark:text-text-primary-dark text-lg font-bold leading-tight tracking-[-0.015em] pb-2">Privacy &amp; Security</h3>
+<div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl p-4 divide-y divide-border-light dark:divide-border-dark">
+<div class="flex items-center py-3">
+<span class="material-symbols-outlined mr-4 text-text-secondary-light dark:text-text-secondary-dark">lock</span>
+<div class="flex-1">
+<p class="text-text-primary-light dark:text-text-primary-dark text-base font-medium">Private Account</p>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Only followers can see your posts.</p>
+</div>
+<input checked="" class="form-checkbox h-5 w-5 rounded text-primary bg-gray-100 border-gray-300 focus:ring-primary dark:focus:ring-primary dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" type="checkbox"/>
+</div>
+<a class="flex items-center py-4 text-text-primary-light dark:text-text-primary-dark" href="#">
+<span class="material-symbols-outlined mr-4 text-text-secondary-light dark:text-text-secondary-dark">block</span>
+<span class="flex-1 text-base font-medium">Blocked Accounts</span>
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- App Settings Section -->
+<section>
+<h3 class="text-text-primary-light dark:text-text-primary-dark text-lg font-bold leading-tight tracking-[-0.015em] pb-2">App Settings</h3>
+<div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl p-4 divide-y divide-border-light dark:divide-border-dark">
+<a class="flex items-center py-4 text-text-primary-light dark:text-text-primary-dark" href="#">
+<span class="material-symbols-outlined mr-4 text-text-secondary-light dark:text-text-secondary-dark">notifications</span>
+<span class="flex-1 text-base font-medium">Notification Settings</span>
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</a>
+<a class="flex items-center py-4 text-text-primary-light dark:text-text-primary-dark" href="#">
+<span class="material-symbols-outlined mr-4 text-text-secondary-light dark:text-text-secondary-dark">help</span>
+<span class="flex-1 text-base font-medium">Help &amp; Support</span>
+<span class="material-symbols-outlined text-text-secondary-light dark:text-text-secondary-dark">chevron_right</span>
+</a>
+</div>
+</section>
+<!-- Actions Section -->
+<section class="pt-4">
+<button class="flex w-full min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-4 bg-red-100 dark:bg-destructive-dark/20 text-destructive dark:text-destructive-dark text-base font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Log Out</span>
+</button>
+</section>
+</main>
+</div>
+</body></html>

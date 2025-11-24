@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Syncing Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0da6f2",
+              "background-light": "#f5f7f8",
+              "background-dark": "#101c22",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {
+              "DEFAULT": "0.25rem",
+              "lg": "0.5rem",
+              "xl": "0.75rem",
+              "full": "9999px"
+            },
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 0,
+            'opsz' 24
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body>
+<div class="relative flex h-screen min-h-screen w-full flex-col items-center justify-center bg-background-light dark:bg-background-dark font-display group/design-root overflow-hidden">
+<div class="flex flex-col items-center justify-center p-8 space-y-8">
+<!-- Animated Graphic/Icon -->
+<div class="relative flex h-24 w-24 items-center justify-center">
+<div class="absolute h-full w-full animate-spin rounded-full border-4 border-dashed border-primary/50"></div>
+<span class="material-symbols-outlined text-4xl text-primary">
+                    sync
+                </span>
+</div>
+<!-- Text Label -->
+<div class="text-center">
+<h1 class="text-slate-900 dark:text-white tracking-tight text-2xl font-bold leading-tight">Syncing...</h1>
+<p class="text-slate-600 dark:text-slate-400 text-base font-normal leading-normal pt-1">Refreshing your feed, just a moment.</p>
+</div>
+<!-- Progress Indicator -->
+<div class="flex flex-col gap-2 w-full max-w-xs">
+<div class="flex gap-6 justify-between">
+<p class="text-slate-800 dark:text-slate-200 text-sm font-medium leading-normal">Loading Feed</p>
+<p class="text-slate-800 dark:text-slate-200 text-sm font-normal leading-normal">75%</p>
+</div>
+<div class="rounded-full bg-slate-200 dark:bg-slate-800 h-2">
+<div class="h-2 rounded-full bg-primary" style="width: 75%;"></div>
+</div>
+<p class="text-slate-500 dark:text-slate-400 text-xs font-normal leading-normal text-right">Almost there!</p>
+</div>
+</div>
+</div>
+</body></html>

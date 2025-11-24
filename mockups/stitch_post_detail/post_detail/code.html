@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Post Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<style>
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#4A90E2", // calming, modern blue
+              "accent-like": "#FF6B6B", // coral for like
+              "background-light": "#F7F8FA", // off-white
+              "background-dark": "#101c22",
+              "card-light": "#FFFFFF",
+              "card-dark": "#192730",
+              "text-primary-light": "#333333",
+              "text-primary-dark": "#E0E0E0",
+              "text-secondary-light": "#888888",
+              "text-secondary-dark": "#9cb0ba",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex min-h-screen w-full flex-col">
+<!-- Header Bar -->
+<header class="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-gray-200/[.08] bg-card-light/80 px-4 backdrop-blur-sm dark:border-white/[.08] dark:bg-card-dark/80">
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-text-primary-light dark:text-text-primary-dark">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-lg font-bold text-text-primary-light dark:text-text-primary-dark">Post</h1>
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-text-primary-light dark:text-text-primary-dark">
+<span class="material-symbols-outlined text-2xl">more_vert</span>
+</button>
+</header>
+<!-- Scrollable Content Area -->
+<main class="flex-1 pb-24">
+<!-- Post Card -->
+<div class="bg-card-light dark:bg-card-dark">
+<!-- Author Header (ListItem) -->
+<div class="flex items-center gap-4 px-4 pt-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-10 w-10" data-alt="User avatar for Sarah Mayer" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAsu1sVoU6xzqd0GuqMNtcoTl_fVAYneoUqxibTzlh0Im_plQQKaoyM21kINvmNL17oZ-2b-HjWg8-3OVrQbrwkTLK5w-eMGGzUggQKg29qM4ZpU7DMLuT61t6XO7MGAQSZHg-SfYwDqDqaV-MSxusN7XTSZFx_zO2AWCCXWonGPvBJoJIRuZdJRLdYDl-0Doc6AetbuEJRTU3Mlq6zzPYa1czVggiGQUTu0WEzjkTJhrAhTpZBHcsSVKAaJPDQ3rcB6Kf1xUap9Ks");'></div>
+<div class="flex-1">
+<p class="text-base font-bold leading-normal text-text-primary-light dark:text-text-primary-dark">Sarah Mayer</p>
+<p class="text-sm font-normal leading-normal text-text-secondary-light dark:text-text-secondary-dark">2 hours ago</p>
+</div>
+</div>
+<!-- Post Content (BodyText) -->
+<p class="text-text-primary-light dark:text-text-primary-dark text-base font-normal leading-relaxed px-4 py-3">
+                    Just enjoying a beautiful sunset at the beach. It's moments like these that make you appreciate the little things in life. #sunset #beachlife #gratitude
+                </p>
+<!-- Post Image -->
+<div class="flex w-full grow bg-background-light dark:bg-background-dark @container">
+<div class="w-full gap-1 overflow-hidden bg-background-light dark:bg-background-dark @[480px]:gap-2 aspect-[4/3] flex">
+<div class="w-full bg-center bg-no-repeat bg-cover aspect-auto rounded-none flex-1" data-alt="A vibrant sunset over a calm ocean beach" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC1MTHKfhfafI0K1hBX5Th6qDiB0VGTiCuzTGppSf17MLr-ynszJDFoIcxojb3sSNcubJnQTCzeKubEp-Hv5gcoLXYG_HhHXhPQ_CfOABBS3JsE4Vaa91Uu_x8RVA8NzKvkgWMxT8Ytcs9RbfxA3DuAx-TnqvY_YhiBJnvxYtZhME4EnLwL77EVdEYwNt9WSOlNFD_jOyh7lALhyr8mOEqBKHCd-2MdChic3x1NffMFiFEn9drFe1R-Dnv4rlzvYG2yX6s5_S7NqHg");'></div>
+</div>
+</div>
+<!-- Engagement Stats (ReactionBar modified) -->
+<div class="flex flex-wrap gap-4 px-4 py-3 border-b border-gray-200/[.08] dark:border-white/[.08]">
+<div class="flex items-center justify-center gap-1.5">
+<p class="text-sm font-bold leading-normal text-text-primary-light dark:text-text-primary-dark">2,154</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">Likes</p>
+</div>
+<div class="flex items-center justify-center gap-1.5">
+<p class="text-sm font-bold leading-normal text-text-primary-light dark:text-text-primary-dark">187</p>
+<p class="text-sm font-normal text-text-secondary-light dark:text-text-secondary-dark">Comments</p>
+</div>
+</div>
+</div>
+<!-- Divider -->
+<div class="h-2 bg-background-light dark:bg-background-dark"></div>
+<!-- Comments Section -->
+<div class="bg-card-light dark:bg-card-dark py-2">
+<!-- Comment Item 1 -->
+<div class="flex gap-3 px-4 py-3">
+<div class="mt-1 bg-center bg-no-repeat aspect-square bg-cover rounded-full h-8 w-8 shrink-0" data-alt="User avatar for Alex Johnson" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC0ahZ_rxiwNzVGN_8dRMnlpOXIPvMDTHWpQ7m_VCfIN6-bL5ycOH9BOfAjYbaWzpoujTnUBNRQa8IBafLrUfNoqTHkzELuqOUVvnKnI0xHmQdoKu3uh9AyzWGoTRxTHTEdAd0f6maylc-OCTWx_CkFuzqMtvwCSNp7RQ6rBTRbdXXfoq8Ydn_-Nn0WSA8eYvZdhbO_DR5dCf7NtfHbSCIxwBdMT0YRiQovvYJMrIqO-fy8nnwSJrB1Y8Y9vw0QoIm3kP4BijZGDqY");'></div>
+<div class="flex-1">
+<div class="rounded-xl bg-background-light dark:bg-background-dark px-3 py-2">
+<div class="flex items-center justify-between">
+<p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Alex Johnson</p>
+</div>
+<p class="text-base text-text-primary-light dark:text-text-primary-dark mt-1">Stunning shot! Looks so peaceful.</p>
+</div>
+<div class="flex items-center gap-3 pl-3 pt-1.5">
+<p class="text-xs font-normal text-text-secondary-light dark:text-text-secondary-dark">1h ago</p>
+<button class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary">Like</button>
+<button class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary">Reply</button>
+</div>
+</div>
+</div>
+<!-- Comment Item 2 -->
+<div class="flex gap-3 px-4 py-3">
+<div class="mt-1 bg-center bg-no-repeat aspect-square bg-cover rounded-full h-8 w-8 shrink-0" data-alt="User avatar for Maria Garcia" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQNx0qEPLfnYRJPIulc8gNzz24hIiEJxD_IVUNEi9VWVkGYeRQWXKzpRjOM2MhEt_Oc3fNUzLxmesSLYQTX1zUFfD48TyvBcvCIgds0pk4dqIsweXM9aO07Qoi53UlzJkyf_hAmR_9OvMG5lxovKBDaCdCxDcJXEfdYlb7UzUC6O7CFKvSAjNMj4AY2-ywhqwy_T_LPN764E1jrj_0Abh7PQs-aHc2I-FRxwahdBM-eHUxt6hlyebqG0oz4VOqa89Um_gVk4y-_Cc");'></div>
+<div class="flex-1">
+<div class="rounded-xl bg-background-light dark:bg-background-dark px-3 py-2">
+<p class="text-sm font-bold text-text-primary-light dark:text-text-primary-dark">Maria Garcia</p>
+<p class="text-base text-text-primary-light dark:text-text-primary-dark mt-1">Wow, that's absolutely breathtaking. Makes me want to go to the beach right now!</p>
+</div>
+<div class="flex items-center gap-3 pl-3 pt-1.5">
+<p class="text-xs font-normal text-text-secondary-light dark:text-text-secondary-dark">45m ago</p>
+<button class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary">Like</button>
+<button class="text-xs font-bold text-text-secondary-light dark:text-text-secondary-dark hover:text-primary">Reply</button>
+</div>
+</div>
+</div>
+<!-- Loading Indicator (example) -->
+<div class="flex items-center justify-center gap-2 px-4 py-6">
+<div class="h-2.5 w-2.5 animate-pulse rounded-full bg-primary/50" style="animation-delay: -0.3s;"></div>
+<div class="h-2.5 w-2.5 animate-pulse rounded-full bg-primary/50" style="animation-delay: -0.1s;"></div>
+<div class="h-2.5 w-2.5 animate-pulse rounded-full bg-primary/50"></div>
+</div>
+</div>
+</main>
+<!-- Sticky Action Bar at the Bottom -->
+<footer class="fixed bottom-0 left-0 right-0 z-10 flex items-center gap-2 border-t border-gray-200/[.08] bg-card-light/80 p-3 backdrop-blur-sm dark:border-white/[.08] dark:bg-card-dark/80">
+<button class="flex h-11 flex-shrink-0 items-center justify-center gap-2 rounded-full bg-accent-like/10 px-4 text-accent-like transition-transform active:scale-95">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1, 'wght' 500;">favorite</span>
+<span class="text-sm font-bold">Like</span>
+</button>
+<div class="relative flex-1">
+<input class="h-11 w-full rounded-full border-none bg-background-light px-4 text-base text-text-primary-light placeholder:text-text-secondary-light dark:bg-background-dark dark:text-text-primary-dark dark:placeholder:text-text-secondary-dark focus:ring-2 focus:ring-primary" placeholder="Add a comment..." type="text"/>
+</div>
+<button class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-primary text-white opacity-50 transition-transform active:scale-95" disabled="">
+<span class="material-symbols-outlined text-2xl">send</span>
+</button>
+</footer>
+</div>
+</body></html>

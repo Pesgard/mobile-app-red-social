@@ -1,0 +1,124 @@
+[versions]
+agp = "8.12.3"
+kotlin = "2.2.21"
+coreKtx = "1.17.0"
+junit = "4.13.2"
+junitVersion = "1.3.0"
+espressoCore = "3.7.0"
+
+# Lifecycle & ViewModel
+lifecycleRuntimeKtx = "2.10.0"
+
+# Compose
+activityCompose = "1.12.0"
+composeBom = "2025.11.01"
+accompanist = "0.37.3"
+
+# Navigation
+navigation = "2.9.6"
+
+# HTTP peticions
+retrofit = "2.12.0"
+moshi = "1.15.2"
+
+# Dependency Injection
+hilt = "2.57.2"
+ksp = "2.2.21-2.0.4"
+hilt-navigation-compose = "1.3.0"
+hilt-worker = "1.3.0"
+hilt-compiler = "1.3.0"
+
+# Coroutines
+coroutines = "1.10.2"
+
+# Images Coil
+coil = "3.3.0"
+
+# Datastore Preferences
+datastore = "1.2.0"
+
+# WorkManager
+workManager = "2.11.0"
+
+# Firebase Crashlytics
+crashlytics = "20.0.3"
+
+# Room
+room = "2.8.4"
+
+# Logging Interceptor OkHttp
+okhttp-logging-interceptor = "5.3.2"
+
+# Icons
+material-icons = "1.7.8"
+
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+androidx-material3-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended", version.ref = "material-icons" }
+
+accompanist = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
+
+dagger-hilt = { group= "com.google.dagger", name = "hilt-android", version.ref = "hilt"}
+dagger-hilt-compiler = { group= "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt"}
+dagger-hilt-navigation-compose = { group= "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-navigation-compose"}
+
+hilt-extension-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hilt-compiler" }
+hilt-workmanager = { group = "androidx.hilt", name = "hilt-work", version.ref = "hilt-worker" }
+
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+moshi-converter = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+
+# Moshi
+moshi = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+
+# Coroutines
+coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# Coil
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
+coil-network = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
+
+# DataStore Preferences
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
+
+# WorkManager
+work-runtime-ktx = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
+
+# Firebase Crashlytics
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "crashlytics" }
+
+# Room
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+# OkHttp Logging Interceptor
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp-logging-interceptor" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+# 1. Plugin de Hilt para el módulo principal
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+# 2. Plugin de Kotlin KSP (para procesar anotaciones de Room/Hilt)
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#4A90E2",
+              "background-light": "#F7F8FA",
+              "background-dark": "#101c22",
+              "text-light-primary": "#212121",
+              "text-light-secondary": "#757575",
+              "text-dark-primary": "#F7F8FA",
+              "text-dark-secondary": "#9cb0ba",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-10 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-4 pb-2 justify-between border-b border-gray-200 dark:border-gray-700/50">
+<div class="text-text-light-primary dark:text-text-dark-primary flex size-12 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</div>
+<h2 class="text-text-light-primary dark:text-text-dark-primary text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center">@alexandra</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-transparent text-text-light-primary dark:text-text-dark-primary gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+<span class="material-symbols-outlined text-2xl">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Main Content -->
+<main class="flex-1">
+<!-- Profile Header -->
+<div class="flex p-4 @container pt-6">
+<div class="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
+<div class="flex gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-24 w-24 shrink-0" data-alt="User avatar image, abstract gradient circle" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBKYGVp-h3Q3uRGNYJ6r4dQhWY1vDCScqiFigMbzgu8WEWUzGYijxbHL3t4ViYMaBvOvW7ngW_WerSOo08PgSeNrCLYUae2R7y4-m4Dvm3qPnF9WsHgtxuH4MULpOZVHE75SlhEYrO-btuSw8UIP0N0yN-EempVA5cDm6n-jnJ8AHqlUimvznwdYw-0dvI3WXhCvRbspQp5LvgVBMM1SyQhmkxl5lnbt6XXGJO8fimkNxCwI_oyiUzHYhqwS9Nu3_gW8ALkD23Q2_c");'></div>
+<div class="flex flex-col justify-center">
+<p class="text-text-light-primary dark:text-text-dark-primary text-[22px] font-bold leading-tight tracking-[-0.015em]">Alexandra Lee</p>
+<p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-normal">Digital artist &amp; coffee enthusiast. Exploring the world one pixel at a time.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Profile Stats -->
+<div class="flex flex-wrap gap-3 px-4 py-3">
+<div class="flex min-w-[100px] flex-1 basis-[fit-content] flex-col gap-1 rounded-lg border border-gray-200 dark:border-gray-700/50 p-3 items-start">
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-2xl font-bold leading-tight">214</p>
+<div class="flex items-center gap-2"><p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Posts</p></div>
+</div>
+<div class="flex min-w-[100px] flex-1 basis-[fit-content] flex-col gap-1 rounded-lg border border-gray-200 dark:border-gray-700/50 p-3 items-start">
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-2xl font-bold leading-tight">22.1k</p>
+<div class="flex items-center gap-2"><p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Followers</p></div>
+</div>
+<div class="flex min-w-[100px] flex-1 basis-[fit-content] flex-col gap-1 rounded-lg border border-gray-200 dark:border-gray-700/50 p-3 items-start">
+<p class="text-text-light-primary dark:text-text-dark-primary tracking-light text-2xl font-bold leading-tight">489</p>
+<div class="flex items-center gap-2"><p class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-normal leading-normal">Following</p></div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex w-full max-w-[480px] gap-3 px-4 pt-2 pb-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-gray-700/50 text-text-light-primary dark:text-text-dark-primary text-sm font-bold leading-normal tracking-[0.015em] flex-1">
+<span class="truncate">Edit Profile</span>
+</button>
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-gray-200 dark:bg-gray-700/50 text-text-light-primary dark:text-text-dark-primary text-sm font-bold leading-normal tracking-[0.015em] flex-1">
+<span class="truncate">Share Profile</span>
+</button>
+</div>
+<!-- Content Section -->
+<div class="pb-3">
+<div class="flex border-b border-gray-200 dark:border-gray-700/50 px-4 justify-between">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-primary text-primary pb-[13px] pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Posts</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-light-secondary dark:text-text-dark-secondary pb-[13px] pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Tagged</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-b-transparent text-text-light-secondary dark:text-text-dark-secondary pb-[13px] pt-4 flex-1" href="#">
+<p class="text-sm font-bold leading-normal tracking-[0.015em]">Saved</p>
+</a>
+</div>
+</div>
+<!-- Image Grid -->
+<div class="grid grid-cols-[repeat(auto-fit,minmax(120px,1fr))] gap-1 p-1">
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A photo of a serene lake at sunset" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuChlTln50MkDn6Ku0AyjhpTwtEscc-_jjJjhp0zYmbw2Yzk4cWoJake4JNmAti9CqgFttty_Km7bPSdpyaP-6ZYtP38fz4C_JMeg0s_RKWuK1Lpd4245mqmU6kFaVAVdd5CDHIY_UvLFdluPv7Fbd6avTLXTcdYXCNcQ6Of5xukwQ751y_FDagsZyOPpkQQSbr4yg_uuBzmPelI5VOqpDho9_rSonhxDxV0Bqu5EUMlwKP2uzt-ZPM10dnmOBWtTfVH8uR9H_TKCOE");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A neon sign in a city at night" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBaz-iOC8DNPvSZNQX1BtkkF7t9epyaznD9rdJ29dUEXLxQJstlEyufAIkC6w35tJee-bisuE4kMGAkCZxQxBkSRtRaELpOpb5dWbRxzZbiIL8CM-H309TRvu1Cn_tdmFRVnTis3kvM1joc8u1tSCnnmDdTwlxbH2GzRtVERUVZ6RmPv17sdyFHueUTSOxw-jX2j5Qoq6EzCbz79wYCSffZ5wAFGmK-8Y1ubAt3SBtESk--8c4uMRolDn1GRHqu92mKgzpXbk9qooY");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A close-up shot of a textured plant leaf" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCXNaO3NlMPZ06VaVnXA6asx1BsdAxKPvwIklnwl0tu0DWBAIDS3DHmJCwSSvxL58Jn3WOM4yDY-IEkcGnB_34pTRAM5hYjS_7Knp77kMQHwMLxN2L0jFmbL3-DtoUaoibADheE3ZvKFWzmU1YjyhimbsQHqF1paVAAtIrW4fWwBTEOfFQAJ657gXQG3yKy-XafOeyzmc1pvyO1RJd8XTrO1KZqubNBDuwOks3rM_wymZCugAyGeK7jDJt_Qn3PoOSCXflLyo1SpgM");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A modern architectural building with clean lines" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJyVg_pJswI7wg5hm3aZKtuXAwQIaIceuBlAPESUKWFj7TRfgBZmP_Ig6Hyh6EpGbssGumTG5Are3JnZn8ElqFFyPj_32ieG2hf1G3T79lAqxuMgz_v4dMqt8430usWTdWoT-mfYANyroAVZ-JdZByWvQflJeFxGOszrs03stHv96v2Eo6924nyKOvqpOE6FoLoaG3lnk0g75CjJ-Xu3Kw2B8zAjY1c0Cv95cp4osO9BmHEqbD0BJjH_2qbB6mhNCaUa_POszfui0");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A minimalist composition of pastel colored blocks" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBQcE4eQu2mslU_0sP8LLcWecGZoMp06W_b7YquKzm021CJFtJAvXucfUp02TgvR_Lf7tGco_ifW6Goua-QHpA9fNRTzf72atlHlOixsBSWF5li8mVelex5St5ODxdLdEB4JbOoaaD9y8L7uXB-_TLGmTf2fY0SyHFtv5-ABe-_GyRwtm4RMgON0Oi-6kUJk7ZAhRQw2_a8iB-3BhxJK1SNrqOgYEltpdF2ul8FtA3t31aLo4kw29ymQG1cOtXv7PZDU7khqpn9TvE");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A forest trail with sunlight filtering through the trees" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDSV0M8VJkQGQDiulmYHznH-QeYH2Y811rJkuTVwk_yoF5fHFY6epaiaegbsLuB-WAJbdGdhHe4BJL4WIs5k4bIv_CCWAPpdYrtMDHMg_LndGDq8exQ63iPbRDP4ifA3xpy0J0iLn0GCZwTsN49gsgEqFfGQ2KDalnHyE5LnBONOUZDyk21TujXbZe9f1hXEbYTN_8_83hwKR1lmeAcafElNbEARi7tnZVyu-5NRAd6o-YtnR9VymP2irpXLVjxWHopeReJ2f9awgg");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="An aerial view of a vibrant cityscape" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCmKYdy4gZdAPCNGR6O8kCVB-yxUSOEb3CQa1a-HNqiAZdt6NkpBKpLjuujQ4KGievVjSEyNW6OP__m0_M0bgFLFCdt_O11BnutVrb_SqvzMZshl5PMF7e452gYAVmCSb6pwGYgWuNXaD8EnyE7IHiZ5n5q5TVv118QKRhrMPLtybXNq2vGOaQe27Zt7P_i0w5uBiS134bzlBjeEPHWKFcjhn4yNBAjCX2A8k86gbyAZoby74zD8ANPq9KEd3O8oOPbYWJLCCrAkPE");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A person reading a book in a cozy cafe" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAbDLZxJCGVExFJHI6_tMW-UUMJgol4Q9UbOSdi7k-pDIB0tvOUlIMUt_GMSgQGc2C8Rcw9YjUOoZLgU7feODECBNg5ZTVtySSJzBi3j7DqXaYFnylFM6Zr3nwH9LujvgmK4IsGN0PF57aDTeA4ajQk9rXv8CWc6WT6uUw7A2jec_4_RAzv2SpHBnzr-5c_cmme1Fc-vbzbftls8Yaq-AeNIMHXjp6LpRMKghlB6Vn8tYcFAZ1izxOoj3sR1kwXGd4JMHqz-nug0VM");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="Colorful abstract paint splatters on a canvas" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAvazXSmlYQ0xgm53uyFIFBTQCV3XTmMGKYWhLdxTyGam4OjaXZNyZPaniiRczzYu0x2_I7ICfPsgOGwPz-XBoqzkyYS_tWkqNrDtczGSsYqUw8MFdAqjqq_DKwZvkTg9txHZD1cKP3HpJF001TDmg96-IcQNQbirZsDiMxNxYOk51pi65aU0hrf_JEZkH8KjP1GpM7fHHh0ByU51RJDN0hiB3fXtndNokAHYPY8S96uZh_Av65Ko4gU1NU5NPoiD_FbAIw5LTxDLQ");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A sandy beach with waves crashing on the shore" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDzyXAnHMn6PMf9FIsnJHitcjxOrjV9onNUr3Cc4hF8ZfGUwmsUZ5f6ihJl0tyCyj1r6FRmxWu8BvvaADGa3KUjphV5s5Jjkdke6rLp912WUt4XaZv1jaaZtXVPyexpklzy5be5caoBpTxIZRGQ2-8MIhtvETxLDXElJnknFlVA71UK_rbOtqO2NztmGVveMxtQQCloEunF4pXE1Bylm1mCFWH5ig3_m0z8AnlZCLDxe48Ej8Y_nguQ8sTT_Ity2sxenPSl6zZOaoI");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A field of wildflowers under a blue sky" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDTRSesOl9vmJgIKSzIEG1gvKZrOQzGaTeT5F-Z-AhJj9li2PruAUvv8yEw5DlFh_NgtXx8c99z9ROsRigf9zjSkKwmaEYxcYWHESsHPMuyJfxetjKVaruml6YGV4uNQPwnHIsHTdrJIOhRCcs_sYzT79B_LjuFtIb7v7nCCdoqYLSaGp3J7VR6eNDoTK_t9PqZR2dWRisFnU8C5ahm4XM9XpkTz-HHPD0K4RsbJjqtfzRVA99eSfJdKv9j0Km-_UFVq0VY7XNjxYE");'></div>
+</div>
+<div class="flex flex-col gap-3">
+<div class="w-full bg-center bg-no-repeat aspect-square bg-cover" data-alt="A mountain range shrouded in mist" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA_RxN-jKPJYJ1vw71R0nhEUe2Tg0dNwJ4kXhe5wF31NQlOkFHDfJ92IUwpfuE2PpnVilZ9sQFBNqxViqgX58hneUZTKsGaN9GKtX95j_dUHD2ANoq1bh7sUW2bQapivDPyhSo2eCtxqO7jw0dBiLDYcyILSA07_V9mn4gog3KWaRD-RO4dMg5MxqH0vSup62X-TmIxE-SWa49Wk4O0VbLqetH6aruFCNh0rJYcv6hSwuPvdACBHpr-0VIONDrb4mI61rAHB7bdqxs");'></div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<div class="sticky bottom-0 z-10 flex w-full justify-around border-t border-gray-200 dark:border-gray-700/50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-2">
+<a class="flex flex-col items-center justify-center p-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary" href="#">
+<span class="material-symbols-outlined text-2xl">home</span>
+<span class="text-xs">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary" href="#">
+<span class="material-symbols-outlined text-2xl">search</span>
+<span class="text-xs">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary" href="#">
+<span class="material-symbols-outlined text-2xl">add_box</span>
+<span class="text-xs">Post</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 rounded-lg text-text-light-secondary dark:text-text-dark-secondary" href="#">
+<span class="material-symbols-outlined text-2xl">favorite</span>
+<span class="text-xs">Activity</span>
+</a>
+<a class="flex flex-col items-center justify-center p-2 rounded-lg text-primary dark:text-primary" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-xs font-bold">Profile</span>
+</a>
+</div>
+</div>
+</body></html>

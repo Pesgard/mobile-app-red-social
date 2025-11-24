@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>New Post Screen</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0da6f2",
+              "background-light": "#f5f7f8",
+              "background-dark": "#101c22",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display group/design-root overflow-x-hidden">
+<!-- Top App Bar -->
+<div class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-200/10 bg-background-light/[.85] p-4 pb-3 backdrop-blur-sm dark:bg-background-dark/[.85]">
+<div class="flex size-10 shrink-0 items-center justify-start">
+<span class="material-symbols-outlined text-gray-800 dark:text-gray-200" style="font-size: 28px;">close</span>
+</div>
+<h2 class="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-gray-900 dark:text-white">New Post</h2>
+<div class="flex w-10 items-center justify-end">
+<button class="shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-bold leading-normal tracking-[0.015em] text-white">Post</button>
+</div>
+</div>
+<div class="flex flex-1 flex-col p-4">
+<!-- User Info -->
+<div class="flex items-center gap-4">
+<div class="h-12 w-12 shrink-0 rounded-full bg-cover bg-center bg-no-repeat" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAb2VQW2s7B5xplV51apraCKgUS8MJ6Ccsu5VlOM_ifrfA44E-27zaS919bqkpcl_03ZwXSaRqAB-FZ5xkJrfmrr-FY9XpMtwsJ4-uPiYfrxYEk8Qdu4wicbZu0YGBhiHxp3o6hjqR_MhGjhdFLRPKQFhZUsRbxe3Qv9WpIU5J9ocTehXF-KGEGQdUdAbeGQDd_6pnv6FKJibrD8VtXCHW0MkWfDoGLg_i-nleXaSNtS44auL1vvSUTZCTI5BtyDfjxrXOIVWzaHaM");'></div>
+<p class="flex-1 truncate text-base font-bold leading-normal text-gray-900 dark:text-white">Jane Doe</p>
+</div>
+<!-- Text Field -->
+<div class="mt-4 flex flex-1">
+<textarea class="form-input flex w-full flex-1 resize-none overflow-hidden border-none bg-transparent p-0 text-base font-normal leading-normal text-gray-700 placeholder:text-gray-500 focus:outline-0 focus:ring-0 dark:text-gray-300 dark:placeholder:text-gray-400" placeholder="What's on your mind?"></textarea>
+</div>
+<!-- Image Grid -->
+<div class="mt-4 grid grid-cols-[repeat(auto-fit,minmax(100px,1fr))] gap-3">
+<div class="relative flex flex-col gap-3">
+<div class="aspect-square w-full rounded-xl bg-cover bg-center bg-no-repeat" data-alt="A tranquil beach scene with gentle waves." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB4xFh2lrBhmbzpJRX1QTqzi5uIXHPhQuyctEH9VIVlujfbFd-MAlhtrJSEZibexgD7ox-hF-iAahipHhllqh0sj3cI2DYVT7GUl4Li_DqqmvmEyolm-vt56jeaw8JyuDxpbhNFhPKmUGO75sxZ0rWIWiX-fF6LJLf5W_1WEx-lTlWC0lAzbxnC_GaFOw5zWFgx-E7pqjWwHYeLMLlVFGPnRE12SzXkKqbpZbQdpHPCuzISkUy0ZcOETEGKBPNMLcLDbhRnO9j6-_w");'></div>
+<button class="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+</button>
+</div>
+<div class="relative flex flex-col gap-3">
+<div class="aspect-square w-full rounded-xl bg-cover bg-center bg-no-repeat" data-alt="The Eiffel Tower at dusk." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB5rCY9-txAuA-8N5zr51W7SLY8inZDYxWeLIDuzCVSQAXJv8Oy-xBL0ZVFULLcdfH-ASOWgOk3_fVjs9l_8PedrPnSale5DMPh6rFaKb5iqD7Oh1g_teJfUEB1Oe9HX7ki-gxiJTueHpQamvx_fE6_Q98byqDsmHuZf9RWwwqyN9zkpKHZKPBFKoIR1VG5Cy3dNSn6DpZK_Ps9PgnyCv596OJbHF063qbvUr30sXodoeIZdrPnwmsFKLhZxbfD_m0ty3oFo0zU_6U");'></div>
+<button class="absolute -right-2 -top-2 flex size-6 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">close</span>
+</button>
+</div>
+<div class="relative flex flex-col gap-3">
+<div class="flex aspect-square w-full items-center justify-center rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700">
+<span class="material-symbols-outlined text-gray-400 dark:text-gray-600">add_photo_alternate</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Spacer to push actions bar to bottom -->
+<div class="flex-grow"></div>
+<!-- Actions Bar -->
+<div class="sticky bottom-0 border-t border-gray-200/10 bg-background-light/[.85] py-2 backdrop-blur-sm dark:bg-background-dark/[.85]">
+<div class="flex items-center justify-between px-4">
+<div class="flex gap-2">
+<button class="flex size-10 items-center justify-center rounded-full text-gray-600 hover:bg-primary/10 hover:text-primary dark:text-gray-400 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined">image</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full text-gray-600 hover:bg-primary/10 hover:text-primary dark:text-gray-400 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined">location_on</span>
+</button>
+<button class="flex size-10 items-center justify-center rounded-full text-gray-600 hover:bg-primary/10 hover:text-primary dark:text-gray-400 dark:hover:bg-primary/20">
+<span class="material-symbols-outlined">gif_box</span>
+</button>
+</div>
+<div class="text-sm text-gray-500 dark:text-gray-400">
+<p>0/280</p>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Social Feed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#0da6f2",
+              "background-light": "#f5f7f8",
+              "background-dark": "#101c22",
+            },
+            fontFamily: {
+              "display": ["Plus Jakarta Sans", "Noto Sans", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative mx-auto flex h-auto min-h-screen w-full max-w-md flex-col overflow-x-hidden group/design-root">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-gray-200/10 bg-background-light/80 px-4 dark:bg-background-dark/80 backdrop-blur-sm">
+<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Connecta</h1>
+<div class="flex items-center gap-2">
+<button class="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10">
+<span class="material-symbols-outlined text-2xl">add_box</span>
+</button>
+<button class="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-white/10">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+<span class="absolute right-1.5 top-1.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-red-500"></span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 pb-20">
+<!-- Story Carousel -->
+<div class="w-full overflow-hidden border-b border-gray-200/10 px-4 py-3">
+<div class="flex min-h-min flex-row items-start justify-start gap-4">
+<div class="flex flex-col items-center justify-center gap-2 text-center w-20">
+<div class="relative">
+<div class="w-16 h-16 bg-center bg-no-repeat aspect-square bg-cover rounded-full p-0.5 border-2 border-dashed border-gray-400 dark:border-gray-600" data-alt="A placeholder image with an abstract pattern" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDU09zz-vG7QyxbJNdSyEnPvNGNmLDZsWZgRTJvFrMB5xVvGoH16sAFfTqmJ0o5-byBC7pzDlcs7bxRLReDdh9thiiEzHvxXIg1w4r2bSFVuqFhngFiiHgrtaFyhCVLiZkrRpxIwlASs-hOv22M_lj09_z9AdaSixhApn35OjwoEibmZ0koZcmFZggrb_Y15R4rqqrTSbsvZMEEeYfB1W3FpTOKPYb3BWZm8xNoYEDR58RrmewhC2Up3GIqiO9zmjLUjG-pIyB2v5Y");'></div>
+<div class="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2 border-background-light dark:border-background-dark bg-primary text-white">
+<span class="material-symbols-outlined text-sm">add</span>
+</div>
+</div>
+<p class="text-gray-800 dark:text-gray-300 text-xs font-medium leading-normal">Your Story</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-2 text-center w-20">
+<div class="w-16 h-16 bg-center bg-no-repeat aspect-square bg-cover rounded-full p-0.5 border-2 border-primary" data-alt="Profile picture of john_doe" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC9Sp7NUCLNMLSAMzX2K7BmHSniZ8MCKDI36TgyNvXqe-ah7897qnYewPs_JzETKflsUAzOXqRb9iJVEp4aGhgA1Mr-rL-0WO5YwUcNV_0mApKzg9xcdXH_Ar_6D-oVpasm6-_sPOtQjm6qTL0U9sp8M81rcb8OCvYLnjAlGV8vMGd4JrBjOmNCFQSb7L_wzrJ0fG3KRBRVQQ8P65dVJLuH11FF2RKltAd5SZd664zNoGQM7YvZE2kBtMpZCh-FjyaK2iFVl8qVbik");'></div>
+<p class="text-gray-800 dark:text-gray-300 text-xs font-medium leading-normal truncate w-full">john_doe</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-2 text-center w-20">
+<div class="w-16 h-16 bg-center bg-no-repeat aspect-square bg-cover rounded-full p-0.5 border-2 border-primary" data-alt="Profile picture of travelbug" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDFaau5jUtTsG0a9CvyUXHfrKFWEyxqroe3ELRsIEjuNTIclF4TQ25Nlp39n5YS3wk4OY3WZhTp51qU-zaQzL0MFxe0KgrhF5yToz-994kY8MzOENJ3W9jdi5t0nDDs1P4LIGtfEe8mhc55u1Yrg5zUh-eUXsNE_CofTcV5htUOsxYQh9IBboUbwBfjnrpnK7C2_MlqjtLCjE2e7VnKPvtqEZda-pQhW_OwuGiQ8J8H0KWKKTv-pBO0mhlQ5fvE355J7jY7L4daYfU");'></div>
+<p class="text-gray-800 dark:text-gray-300 text-xs font-medium leading-normal truncate w-full">travelbug</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-2 text-center w-20">
+<div class="w-16 h-16 bg-center bg-no-repeat aspect-square bg-cover rounded-full p-0.5 border-2 border-primary" data-alt="Profile picture of citylights" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBNM6pQbHqB8u-sSJ7c5X2RVLAiq6hPbc3eVxb0MktNBToPks_xcWr7XyV5ZLJsI9mNrtaw1JORvYICV1awEyPCakJatL-luIqFzSmPsDs5aoKVyKqKyNmo0ssezqYsDqRqvyxTpvWhpSUb9JDln52jNR71UCSW61ZNxm4aiBCBGQoUubMxS3VNjQLIcHONwUYr0JYqgsqmcVn3aJduFb6BXDMSrOZTyCSnOhVSv_05eT6Fmsn-DwY7FQhm-UIdY4fy9X58Xr0aUPM");'></div>
+<p class="text-gray-800 dark:text-gray-300 text-xs font-medium leading-normal truncate w-full">citylights</p>
+</div>
+<div class="flex flex-col items-center justify-center gap-2 text-center w-20">
+<div class="w-16 h-16 bg-center bg-no-repeat aspect-square bg-cover rounded-full p-0.5 border-2 border-primary" data-alt="Profile picture of coffeelover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCTywM1w1Mfpua1zW8pqVPc_8dYjC6eemcwQ53a8zqnmFlZKn2BVBEkKLtMUxdDf1rvaiJWNbZ0YKkym35yMP2HHtDfT2AlyPjywerlU5yHcbqjb80aU48-sbv9uBc0-Z7AMBLTgc65TjZHXGmp_0TnQ5j2_xLI_J7OHep0rxNklWW1RSM8QVXU0Z9pVuwVN9hy0rzKgcbFjdejqxmN-jUaXl4YJAsO_3s2qLN4HiriF93gJR_t0bCs3qCXBMkEBc1Pcq27A9fDGxM");'></div>
+<p class="text-gray-800 dark:text-gray-300 text-xs font-medium leading-normal truncate w-full">coffeelover</p>
+</div>
+</div>
+</div>
+<!-- Post Card 1 -->
+<div class="flex flex-col border-b border-gray-200/10 py-4">
+<div class="flex items-center justify-between px-4 pb-3">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-cover bg-center" data-alt="Profile picture of Jane Smith" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBjPhe4Grk7uzjSyrZuA8WIz5KUPGSfiLiKe4Yw8WklA3c2KcutFqVCfRIUG1dR5ofVDvtSDKG4w7gdSOv8-NhZ-jaOFjENj3yZ9UWvhZUTFhfDFQXLMQ9IY8atC__6UvkDr_8BciPO0JLYgRWcrE7wMIBmZrWdpoDNJgCPy-jnl52zPeYQc7tIhmjqP_Ad6a4QrNR55NiWM905YVJOmsUNKOAdPLEJCiHY7KdWLU2iCBBa6Qc_EVFey9PcgBNTVYYIW3bV4O4ahrQ')"></div>
+<div>
+<p class="text-sm font-bold text-gray-900 dark:text-white">Jane Smith</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">2 hours ago</p>
+</div>
+</div>
+<button class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
+<span class="material-symbols-outlined text-xl">more_horiz</span>
+</button>
+</div>
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="Beautiful coastline with blue ocean waves" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAw4yVGIg1jF9VOaldeBfSyYyQelXkHbD9dwA7TLJSQ7ZTPWSLluqC84V8GO4ZzHnwA0GSqgqCvLWGwKxkovvOd9fJyrs3bcH3FlddDkS4YCApG19YI1wRdO0OSmVOxDY8SkF5-07u2fsiAZw7MmkJM3E3M3H0jyd1vsq2M7d5wwlCxARIQj1UV2ABh58nUj1-wUn5L2xrOTgS2Re2XkvBoVjFtDlVECq1uVFTdAWcxjoW_IPH-DEnmy3Zw6ms3rJjxN3Y8qOjII_k");'></div>
+<div class="px-4 pt-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">favorite_border</span>
+</button>
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">chat_bubble_outline</span>
+</button>
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+<p class="pt-2 text-sm font-semibold text-gray-800 dark:text-gray-200">1,245 likes</p>
+<p class="pt-1 text-sm text-gray-800 dark:text-gray-200"><span class="font-bold">Jane Smith</span> Exploring the beautiful coastlines today! What an amazing view. <span class="text-primary">#travel #ocean</span></p>
+<p class="pt-1 text-sm text-gray-500 dark:text-gray-400">View all 42 comments</p>
+</div>
+</div>
+<!-- Post Card 2 -->
+<div class="flex flex-col border-b border-gray-200/10 py-4">
+<div class="flex items-center justify-between px-4 pb-3">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-cover bg-center" data-alt="Profile picture of Alex Ray" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAhmu7bnCQSi7aW7UOoCVhRMSe7wEzuCO8r4NN4x5NzWCT5aTbELZ4WzEhUIJ3VXMbB0Ff0FQ3Uccnqk3bF_46AGupvnPX8lyI1nklYUFECeDrMxkGUakayVF_55SLFjWWsKdoYWatH3umENcYA5rSl_aeseKx7gXms7yt7IguhRgm2ZcHM2RxJ1Y6sNym2XZYAZlMM8XAOoMogipBk0b2HDXR4ErE4w4FjI9H4p5E5aIoW3PpI1_mg8JFCp1sH5KmYt2lZ-axSBOM')"></div>
+<div>
+<p class="text-sm font-bold text-gray-900 dark:text-white">Alex Ray</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">5 hours ago</p>
+</div>
+</div>
+<button class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
+<span class="material-symbols-outlined text-xl">more_horiz</span>
+</button>
+</div>
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="A person lifting weights in a gym" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB9dLZye4-Hr6Qm8oclU5Om2vjWDenzlM5AAaR_esjh45c_KlA-xYxSkUOnpiIjDEDVNnHQyB5Oh7yNsDwApx6hzd1FcE-Z8kh_-liQvewq-gBv1I1JYEJ1lX6FmegoxxzHBxJDjlu85x8Ws2n2z05MpB3AjmJyWm2CSxpzOEDz5YAdtvWCWr92-Ba5BFKs-c4BQzp6kBTg0V1gOXr8Z4cNg1WqRYKdUhWYKxK_aLQU0fLdiMgdqHJ6e_TaicD7gAvF9TFRvDZaNGs");'></div>
+<div class="px-4 pt-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-red-500">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">favorite</span>
+</button>
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">chat_bubble_outline</span>
+</button>
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+<p class="pt-2 text-sm font-semibold text-gray-800 dark:text-gray-200">Liked by you and 318 others</p>
+<p class="pt-1 text-sm text-gray-800 dark:text-gray-200"><span class="font-bold">Alex Ray</span> Just finished a great workout session. Feeling energized and ready for the week! <span class="text-primary">#fitness #motivation</span></p>
+<p class="pt-1 text-sm text-gray-500 dark:text-gray-400">View all 18 comments</p>
+</div>
+</div>
+<!-- Post Card 3 -->
+<div class="flex flex-col border-b border-gray-200/10 py-4">
+<div class="flex items-center justify-between px-4 pb-3">
+<div class="flex items-center gap-3">
+<div class="h-10 w-10 rounded-full bg-cover bg-center" data-alt="Profile picture of Mia Wong" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAexYxJjoM8bC3MsdHn7_XPm1zOhe4zo8fYdkkhSb2yjySxb4HLmum3_DG1jF-F3Y1Yhh3ytYmf4JBlnsMr9QLyRJhvpg6rcChnodYCf7fu0sNvv21r0NwOm_oTveH5cNJPC4wN6lTppYV-9GaS9-tAjlqgEssbBCqRlUgZ3xRbSwf9_XRUK1EdVNNaadaLN22waSJa2bDr4T4HiV9Lk0LL11TLAChSz4CqVLSK3OqdCsuEjv8t88dsPhZuW7sd7II6ov6z45uYKWo')"></div>
+<div>
+<p class="text-sm font-bold text-gray-900 dark:text-white">Mia Wong</p>
+<p class="text-xs text-gray-500 dark:text-gray-400">Yesterday</p>
+</div>
+</div>
+<button class="flex h-8 w-8 items-center justify-center rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-white/10">
+<span class="material-symbols-outlined text-xl">more_horiz</span>
+</button>
+</div>
+<div class="w-full bg-center bg-no-repeat aspect-video bg-cover" data-alt="A delicious looking plate of pasta" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD2danj1JAQyAJNYMcUsjcEuVNH0DJwfoZ15PEob6pBX4Co3qzv_nG4ZXP5MQ8pKSvJP0fm_yPRLsImswuG1qXAGeM9gckpozj7Z_TLzoQZs4sgUiUVU2jEhB-wlRD4aaFVilN35pRySAXDR8KeWe9whMo3Wp4o7GEPqBAJAjeqIbBE2nbHAa-OjNvU-NN9Qwc3lzwMb2o1xMic-Au0Veo3wlg3gjQjku53KOOUd01HYH1fQ5raSgEIcIIHZENSKSFQ7_AMbKy-Ol4");'></div>
+<div class="px-4 pt-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">favorite_border</span>
+</button>
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">chat_bubble_outline</span>
+</button>
+<button class="flex items-center gap-1.5 text-gray-600 dark:text-gray-300">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+<p class="pt-2 text-sm font-semibold text-gray-800 dark:text-gray-200">4,582 likes</p>
+<p class="pt-1 text-sm text-gray-800 dark:text-gray-200"><span class="font-bold">Mia Wong</span> Tried out a new recipe for pasta tonight. It was delicious! 🍝 <span class="text-primary">#foodie #homemade</span></p>
+<p class="pt-1 text-sm text-gray-500 dark:text-gray-400">View all 98 comments</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 z-10 grid h-20 w-full max-w-md grid-cols-4 items-center border-t border-gray-200/10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+<a class="flex flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-xs font-bold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">search</span>
+<span class="text-xs">Search</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">chat_bubble_outline</span>
+<span class="text-xs">Messages</span>
+</a>
+<a class="flex flex-col items-center justify-center gap-1 text-gray-500 dark:text-gray-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-xs">Profile</span>
+</a>
+</nav>
+</div>
+</body></html>
