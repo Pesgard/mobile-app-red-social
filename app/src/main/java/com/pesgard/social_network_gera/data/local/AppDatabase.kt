@@ -5,10 +5,12 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.pesgard.social_network_gera.data.local.database.Converters
 import com.pesgard.social_network_gera.data.local.database.dao.CommentDao
+import com.pesgard.social_network_gera.data.local.database.dao.DraftPostDao
 import com.pesgard.social_network_gera.data.local.database.dao.FavoriteDao
 import com.pesgard.social_network_gera.data.local.database.dao.PostDao
 import com.pesgard.social_network_gera.data.local.database.dao.UserDao
 import com.pesgard.social_network_gera.data.local.database.entity.CommentEntity
+import com.pesgard.social_network_gera.data.local.database.entity.DraftPostEntity
 import com.pesgard.social_network_gera.data.local.database.entity.FavoriteEntity
 import com.pesgard.social_network_gera.data.local.database.entity.PostEntity
 import com.pesgard.social_network_gera.data.local.database.entity.UserEntity
@@ -24,7 +26,8 @@ import com.pesgard.social_network_gera.util.Constants
         UserEntity::class,
         PostEntity::class,
         CommentEntity::class,
-        FavoriteEntity::class
+        FavoriteEntity::class,
+        DraftPostEntity::class
     ],
     version = Constants.DATABASE_VERSION,
     exportSchema = false
@@ -51,4 +54,9 @@ abstract class AppDatabase : RoomDatabase() {
      * DAO para operaciones de favoritos
      */
     abstract fun favoriteDao(): FavoriteDao
+    
+    /**
+     * DAO para operaciones de borradores
+     */
+    abstract fun draftPostDao(): DraftPostDao
 }

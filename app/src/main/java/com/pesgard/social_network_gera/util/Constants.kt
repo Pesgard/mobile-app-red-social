@@ -53,7 +53,7 @@ object Constants {
     /**
      * Versión de la base de datos
      */
-    const val DATABASE_VERSION = 1
+    const val DATABASE_VERSION = 2
     
     /**
      * Nombres de tablas
@@ -63,6 +63,7 @@ object Constants {
         const val POSTS = "posts"
         const val COMMENTS = "comments"
         const val FAVORITES = "favorites"
+        const val DRAFTS = "drafts"
     }
 
     // ============================================================

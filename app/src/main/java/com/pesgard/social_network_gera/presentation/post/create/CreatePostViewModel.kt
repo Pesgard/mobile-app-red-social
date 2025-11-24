@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pesgard.social_network_gera.data.local.datastore.SessionManager
+import com.pesgard.social_network_gera.domain.model.DraftPost
 import com.pesgard.social_network_gera.domain.model.Post
 import com.pesgard.social_network_gera.domain.repository.PostRepository
 import com.pesgard.social_network_gera.util.Resource
@@ -30,10 +31,17 @@ data class CreatePostUiState(
     val imageBase64List: List<String> = emptyList(), // Imágenes convertidas a base64
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isSubmitting: Boolean = false
+    val isSubmitting: Boolean = false,
+    val isSavingDraft: Boolean = false,
+    val drafts: List<DraftPost> = emptyList(),
+    val isLoadingDrafts: Boolean = false,
+    val showDraftsList: Boolean = false,
+    val editingDraftId: Long? = null
 ) {
     val canSubmit: Boolean
         get() = title.trim().isNotEmpty() && !isSubmitting
+    val canSaveDraft: Boolean
+        get() = (title.trim().isNotEmpty() || description.trim().isNotEmpty() || selectedImages.isNotEmpty()) && !isSavingDraft
 }
 
 /**
@@ -47,6 +55,10 @@ class CreatePostViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(CreatePostUiState())
     val uiState: StateFlow<CreatePostUiState> = _uiState.asStateFlow()
+    
+    init {
+        loadDrafts()
+    }
 
     /**
      * Actualiza el título
@@ -229,7 +241,160 @@ class CreatePostViewModel @Inject constructor(
      * Resetea el formulario
      */
     fun resetForm() {
-        _uiState.update { CreatePostUiState() }
+        _uiState.update { 
+            CreatePostUiState(
+                drafts = _uiState.value.drafts,
+                showDraftsList = _uiState.value.showDraftsList
+            )
+        }
+    }
+    
+    // ============================================================
+    // DRAFT METHODS
+    // ============================================================
+    
+    /**
+     * Carga los borradores del usuario
+     */
+    fun loadDrafts() {
+        _uiState.update { it.copy(isLoadingDrafts = true) }
+        viewModelScope.launch {
+            postRepository.getDrafts().collect { drafts ->
+                _uiState.update { 
+                    it.copy(
+                        drafts = drafts,
+                        isLoadingDrafts = false
+                    )
+                }
+            }
+        }
+    }
+    
+    /**
+     * Guarda el post actual como borrador
+     */
+    fun saveDraft(context: android.content.Context) {
+        val currentState = _uiState.value
+        if (!currentState.canSaveDraft) return
+        
+        _uiState.update { it.copy(isSavingDraft = true, error = null) }
+        
+        viewModelScope.launch {
+            // Convertir imágenes a base64 si hay
+            var imageBase64List = currentState.imageBase64List
+            if (currentState.selectedImages.isNotEmpty() && imageBase64List.isEmpty()) {
+                convertImagesToBase64(context)
+                imageBase64List = _uiState.value.imageBase64List
+            }
+            
+            val userId = sessionManager.userId.firstOrNull() ?: ""
+            if (userId.isEmpty()) {
+                _uiState.update { 
+                    it.copy(
+                        isSavingDraft = false,
+                        error = "Usuario no autenticado"
+                    )
+                }
+                return@launch
+            }
+            
+            val draft = DraftPost(
+                id = currentState.editingDraftId ?: 0,
+                userId = userId,
+                title = currentState.title.trim(),
+                description = currentState.description.trim(),
+                images = imageBase64List,
+                updatedAt = System.currentTimeMillis()
+            )
+            
+            val result = if (currentState.editingDraftId != null) {
+                postRepository.updateDraft(draft)
+            } else {
+                postRepository.saveDraft(draft)
+            }
+            
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isSavingDraft = false,
+                    error = if (result is Resource.Error) {
+                        result.message
+                    } else {
+                        // Limpiar formulario después de guardar
+                        null
+                    },
+                    editingDraftId = null
+                )
+            }
+            
+            if (result is Resource.Success) {
+                // Limpiar formulario
+                resetForm()
+            }
+        }
+    }
+    
+    /**
+     * Carga un borrador en el formulario para editar
+     */
+    fun loadDraft(draftId: Long) {
+        viewModelScope.launch {
+            val draft = postRepository.getDraftById(draftId)
+            if (draft != null) {
+                _uiState.update {
+                    it.copy(
+                        title = draft.title,
+                        description = draft.description,
+                        imageBase64List = draft.images,
+                        selectedImages = emptyList(), // Las imágenes base64 no se pueden convertir a URI fácilmente
+                        editingDraftId = draft.id,
+                        showDraftsList = false
+                    )
+                }
+            }
+        }
+    }
+    
+    /**
+     * Elimina un borrador
+     */
+    fun deleteDraft(draftId: Long) {
+        viewModelScope.launch {
+            val result = postRepository.deleteDraft(draftId)
+            if (result is Resource.Error) {
+                _uiState.update { it.copy(error = result.message) }
+            }
+        }
+    }
+    
+    /**
+     * Publica un borrador
+     */
+    fun publishDraft(draftId: Long, context: android.content.Context, onSuccess: () -> Unit) {
+        _uiState.update { it.copy(isSubmitting = true, error = null) }
+        
+        viewModelScope.launch {
+            val result = postRepository.publishDraft(draftId, context)
+            
+            _uiState.update { currentState ->
+                currentState.copy(
+                    isSubmitting = false,
+                    error = if (result is Resource.Error) {
+                        result.message
+                    } else null
+                )
+            }
+            
+            if (result is Resource.Success) {
+                onSuccess()
+            }
+        }
+    }
+    
+    /**
+     * Muestra/oculta la lista de borradores
+     */
+    fun toggleDraftsList() {
+        _uiState.update { it.copy(showDraftsList = !it.showDraftsList) }
     }
 }
 

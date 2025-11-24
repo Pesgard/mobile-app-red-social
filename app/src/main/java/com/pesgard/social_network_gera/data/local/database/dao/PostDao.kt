@@ -80,6 +80,13 @@ interface PostDao {
      */
     @Update
     suspend fun updatePost(post: PostEntity)
+    
+    /**
+     * Actualiza el userId de un post por su serverId
+     * Útil para corregir posts que tienen userId incorrecto
+     */
+    @Query("UPDATE ${com.pesgard.social_network_gera.util.Constants.Tables.POSTS} SET userId = :userId WHERE serverId = :serverId")
+    suspend fun updatePostUserId(serverId: String, userId: String)
 
     /**
      * Elimina una publicación por su ID

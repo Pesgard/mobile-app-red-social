@@ -152,6 +152,13 @@ interface ApiService {
     suspend fun getFavorites(): Response<List<PostDto>>
     
     /**
+     * Obtener posts de un usuario específico
+     * GET /posts/user/:userId
+     */
+    @GET("posts/user/{userId}")
+    suspend fun getUserPosts(@Path("userId") userId: String): Response<List<PostDto>>
+    
+    /**
      * Sincronizar datos pendientes
      * POST /sync
      */

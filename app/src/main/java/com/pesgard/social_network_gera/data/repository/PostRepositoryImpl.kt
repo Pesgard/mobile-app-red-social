@@ -2,10 +2,12 @@ package com.pesgard.social_network_gera.data.repository
 
 import com.pesgard.social_network_gera.data.local.AppDatabase
 import com.pesgard.social_network_gera.data.local.database.dao.CommentDao
+import com.pesgard.social_network_gera.data.local.database.dao.DraftPostDao
 import com.pesgard.social_network_gera.data.local.database.dao.FavoriteDao
 import com.pesgard.social_network_gera.data.local.database.dao.PostDao
 import com.pesgard.social_network_gera.data.local.database.dao.UserDao
 import com.pesgard.social_network_gera.data.local.database.entity.CommentEntity
+import com.pesgard.social_network_gera.data.local.database.entity.DraftPostEntity
 import com.pesgard.social_network_gera.data.local.database.entity.FavoriteEntity
 import com.pesgard.social_network_gera.data.local.database.entity.PostEntity
 import com.pesgard.social_network_gera.data.local.database.entity.toDomain
@@ -18,6 +20,7 @@ import com.pesgard.social_network_gera.data.remote.dto.PostDto
 import com.pesgard.social_network_gera.data.remote.dto.UpdatePostRequest
 import com.pesgard.social_network_gera.data.remote.dto.VoteRequest
 import com.pesgard.social_network_gera.data.remote.dto.toDomain
+import com.pesgard.social_network_gera.domain.model.DraftPost
 import com.pesgard.social_network_gera.domain.model.Post
 import com.pesgard.social_network_gera.domain.repository.PostRepository
 import com.pesgard.social_network_gera.util.Constants
@@ -43,6 +46,7 @@ class PostRepositoryImpl @Inject constructor(
     private val userDao: UserDao,
     private val commentDao: CommentDao,
     private val favoriteDao: FavoriteDao,
+    private val draftPostDao: DraftPostDao,
     private val sessionManager: SessionManager,
     private val networkMonitor: NetworkMonitor
 ) : PostRepository {
@@ -116,14 +120,35 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override fun getPostByServerId(serverId: String): Flow<Post?> {
-        return kotlinx.coroutines.flow.flow {
-            val entity = postDao.getPostByServerId(serverId)
-            if (entity != null) {
-                val userId = getCurrentUserId()
-                val isFav = favoriteDao.isFavorite(userId, entity.id).firstOrNull() ?: false
-                emit(entity.toDomain().copy(isFavorite = isFav))
-            } else {
-                emit(null)
+        return sessionManager.userId.flatMapLatest { currentUserId ->
+            val postEntityFlow = kotlinx.coroutines.flow.flow {
+                emit(postDao.getPostByServerId(serverId))
+            }
+            
+            postEntityFlow.flatMapLatest { entity ->
+                if (entity == null) {
+                    kotlinx.coroutines.flow.flowOf(null)
+                } else {
+                    // Cargar usuario del post
+                    val userFlow = userDao.getUserById(entity.userId)
+                    
+                    // Cargar estado de favorito
+                    val isFavoriteFlow = if (currentUserId != null) {
+                        favoriteDao.isFavorite(currentUserId, entity.id)
+                    } else {
+                        kotlinx.coroutines.flow.flowOf(false)
+                    }
+                    
+                    combine(
+                        kotlinx.coroutines.flow.flowOf(entity),
+                        isFavoriteFlow,
+                        userFlow
+                    ) { postEntity, isFav, userEntity ->
+                        (postEntity as? PostEntity)?.toDomain(
+                            user = userEntity as? com.pesgard.social_network_gera.data.local.database.entity.UserEntity
+                        )?.copy(isFavorite = isFav ?: false)
+                    }
+                }
             }
         }
     }
@@ -136,15 +161,38 @@ class PostRepositoryImpl @Inject constructor(
                 kotlinx.coroutines.flow.flowOf(emptyList<com.pesgard.social_network_gera.data.local.database.entity.FavoriteEntity>())
             }
             
-            combine(
-                postDao.getPostsByUserId(userId),
-                favoritesFlow
-            ) { posts, favorites ->
-                val favoritePostIds = favorites.map { it.postId }.toSet()
-                posts.map { entity ->
-                    entity.toDomain().copy(
-                        isFavorite = favoritePostIds.contains(entity.id)
-                    )
+            postDao.getPostsByUserId(userId).flatMapLatest { postEntities ->
+                if (postEntities.isEmpty()) {
+                    kotlinx.coroutines.flow.flowOf(emptyList())
+                } else {
+                    // Recolectar todos los userIds únicos
+                    val uniqueUserIds = postEntities.map { it.userId }.distinct()
+                    
+                    // Cargar todos los usuarios necesarios
+                    val usersFlow = if (uniqueUserIds.size == 1) {
+                        userDao.getUserById(uniqueUserIds.first()).map { listOfNotNull(it) }
+                    } else {
+                        userDao.getUsersByIds(uniqueUserIds)
+                    }
+                    
+                    combine(
+                        kotlinx.coroutines.flow.flowOf(postEntities),
+                        favoritesFlow,
+                        usersFlow
+                    ) { entities, favorites, users ->
+                        val favoritePostIds = favorites.map { it.postId }.toSet()
+                        val usersMap = users.associateBy { it.id }
+                        
+                        (entities as? List<PostEntity>)?.map { entity ->
+                            val user = usersMap[entity.userId]
+                            entity.toDomain(user = user).copy(
+                                isFavorite = favoritePostIds.contains(entity.id),
+                                // Usar user_interaction del backend si está disponible
+                                isLiked = false, // Se actualizará desde user_interaction si está disponible
+                                isDisliked = false // Se actualizará desde user_interaction si está disponible
+                            )
+                        } ?: emptyList()
+                    }
                 }
             }
         }
@@ -422,13 +470,146 @@ class PostRepositoryImpl @Inject constructor(
     }
 
     override fun getFavorites(): Flow<List<Post>> {
-        return kotlinx.coroutines.flow.flow {
-            val userId = getCurrentUserId()
-            val favorites = favoriteDao.getFavoritesByUserId(userId).firstOrNull() ?: emptyList()
-            val posts = favorites.mapNotNull { favorite ->
-                postDao.getPostById(favorite.postId).firstOrNull()?.toDomain()?.copy(isFavorite = true)
+        return sessionManager.userId.flatMapLatest { userId ->
+            if (userId == null) {
+                kotlinx.coroutines.flow.flowOf(emptyList())
+            } else {
+                favoriteDao.getFavoritesByUserId(userId).flatMapLatest { favorites ->
+                    if (favorites.isEmpty()) {
+                        kotlinx.coroutines.flow.flowOf(emptyList())
+                    } else {
+                        // Obtener todos los postIds de favoritos
+                        val postIds = favorites.map { it.postId }
+                        
+                        // Cargar posts de forma reactiva usando firstOrNull para cada uno
+                        kotlinx.coroutines.flow.flow {
+                            val postEntities = postIds.mapNotNull { postId ->
+                                postDao.getPostById(postId).firstOrNull()
+                            }
+                            
+                            if (postEntities.isEmpty()) {
+                                emit(emptyList())
+                            } else {
+                                // Obtener userIds únicos
+                                val userIds = postEntities.map { it.userId }.distinct()
+                                
+                                // Cargar usuarios
+                                val users = if (userIds.size == 1) {
+                                    listOfNotNull(userDao.getUserById(userIds.first()).firstOrNull())
+                                } else {
+                                    userDao.getUsersByIds(userIds).firstOrNull() ?: emptyList()
+                                }
+                                
+                                val usersMap = users.associateBy { it.id }
+                                val favoritePostIds = favorites.map { it.postId }.toSet()
+                                
+                                val posts = postEntities.map { entity ->
+                                    val user = usersMap[entity.userId]
+                                    entity.toDomain(user = user).copy(
+                                        isFavorite = favoritePostIds.contains(entity.id)
+                                    )
+                                }
+                                
+                                emit(posts)
+                            }
+                        }
+                    }
+                }
             }
-            emit(posts)
+        }
+    }
+
+    override suspend fun refreshFavorites(): Resource<Unit> {
+        if (!networkMonitor.isOnline()) {
+            return Resource.Error(Constants.ErrorMessages.OFFLINE_ERROR)
+        }
+
+        return try {
+            val response = apiService.getFavorites()
+            if (response.isSuccessful && response.body() != null) {
+                val favorites = response.body()!!
+                val userId = getCurrentUserId()
+                
+                android.util.Log.d("PostRepository", "Refrescando ${favorites.size} favoritos del usuario")
+                
+                // Usar transacción para asegurar atomicidad
+                database.withTransaction {
+                    // Primero, eliminar todos los favoritos existentes del usuario
+                    favoriteDao.deleteAllFavoritesByUserId(userId)
+                    
+                    // Guardar usuarios de los posts favoritos
+                    favorites.forEach { postDto ->
+                        postDto.author?.let { authorDto ->
+                            try {
+                                val user = authorDto.toDomain()
+                                userDao.insertUser(user.toEntity())
+                            } catch (e: Exception) {
+                                android.util.Log.d("PostRepository", "Usuario ya existe: ${e.message}")
+                            }
+                        }
+                    }
+                    
+                    // Guardar posts y favoritos
+                    favorites.forEach { postDto ->
+                        try {
+                            val serverId = postDto.id
+                            val authorId = postDto.author?.id
+                            
+                            if (authorId.isNullOrBlank()) {
+                                android.util.Log.w("PostRepository", "Post favorito sin autor, saltando: $serverId")
+                                return@forEach
+                            }
+                            
+                            // Convertir PostDto a Post
+                            val post = postDto.toDomain()
+                            
+                            // Buscar post existente por serverId
+                            val existingPost = postDao.getPostByServerId(serverId)
+                            
+                            val postEntity = if (existingPost != null) {
+                                // Actualizar post existente manteniendo el ID local
+                                post.toEntity().copy(
+                                    id = existingPost.id,
+                                    userId = authorId,
+                                    serverId = serverId
+                                )
+                            } else {
+                                // Insertar nuevo post
+                                post.toEntity().copy(
+                                    userId = authorId,
+                                    serverId = serverId
+                                )
+                            }
+                            
+                            // Guardar/actualizar post
+                            val localPostId = if (existingPost != null) {
+                                postDao.updatePost(postEntity)
+                                existingPost.id
+                            } else {
+                                postDao.insertPost(postEntity)
+                            }
+                            
+                            // Guardar favorito
+                            favoriteDao.insertFavorite(
+                                FavoriteEntity(
+                                    userId = userId,
+                                    postId = localPostId
+                                )
+                            )
+                        } catch (e: Exception) {
+                            android.util.Log.e("PostRepository", "Error guardando favorito: ${e.message}", e)
+                        }
+                    }
+                }
+                
+                android.util.Log.d("PostRepository", "Favoritos refrescados exitosamente")
+                Resource.Success(Unit)
+            } else {
+                Resource.Error(Constants.ErrorMessages.NETWORK_ERROR)
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("PostRepository", "Error refrescando favoritos: ${e.message}", e)
+            Resource.Error(Constants.ErrorMessages.NETWORK_ERROR, e)
         }
     }
 
@@ -616,6 +797,120 @@ class PostRepositoryImpl @Inject constructor(
             Resource.Error(Constants.ErrorMessages.NETWORK_ERROR, e)
         }
     }
+
+    override suspend fun refreshUserPosts(userId: String): Resource<Unit> {
+        if (!networkMonitor.isOnline()) {
+            return Resource.Error(Constants.ErrorMessages.OFFLINE_ERROR)
+        }
+
+        return try {
+            val response = apiService.getUserPosts(userId)
+            if (response.isSuccessful && response.body() != null) {
+                val posts = response.body()!!
+                
+                android.util.Log.d("PostRepository", "Refrescando ${posts.size} posts del usuario $userId")
+                
+                // Usar transacción para asegurar atomicidad
+                var savedCount = 0
+                var updatedCount = 0
+                var errorCount = 0
+                
+                database.withTransaction {
+                    posts.forEachIndexed { index, postDto ->
+                        try {
+                            val serverId = postDto.id
+                            val authorId = postDto.author?.id
+                            
+                            android.util.Log.d("PostRepository", "Procesando post ${index + 1}/${posts.size}: serverId=$serverId, title=${postDto.title}")
+                            
+                            if (authorId.isNullOrBlank()) {
+                                android.util.Log.w("PostRepository", "Post sin autor, saltando: $serverId")
+                                errorCount++
+                                return@forEachIndexed
+                            }
+                            
+                            // Guardar usuario del post si existe
+                            postDto.author?.let { authorDto ->
+                                try {
+                                    val user = authorDto.toDomain()
+                                    userDao.insertUser(user.toEntity())
+                                    android.util.Log.d("PostRepository", "Usuario guardado: ${user.id} - ${user.alias}")
+                                } catch (e: Exception) {
+                                    // Si el usuario ya existe, continuar
+                                    android.util.Log.d("PostRepository", "Usuario ya existe: ${e.message}")
+                                }
+                            }
+                            
+                            // Convertir PostDto a Post
+                            val post = postDto.toDomain()
+                            
+                            // Buscar post existente por serverId
+                            val existingPost = postDao.getPostByServerId(serverId)
+                            
+                            val postEntity = if (existingPost != null) {
+                                // Actualizar post existente manteniendo el ID local
+                                updatedCount++
+                                post.toEntity().copy(
+                                    id = existingPost.id,
+                                    userId = authorId, // Asegurar que el userId sea correcto
+                                    serverId = serverId
+                                )
+                            } else {
+                                // Insertar nuevo post
+                                savedCount++
+                                post.toEntity().copy(
+                                    userId = authorId, // Asegurar que el userId sea correcto
+                                    serverId = serverId
+                                )
+                            }
+                            
+                            // Guardar/actualizar post
+                            if (existingPost != null) {
+                                // Asegurar que todos los campos se actualicen, especialmente userId
+                                val updatedEntity = postEntity.copy(
+                                    id = existingPost.id,
+                                    userId = authorId, // Forzar actualización del userId
+                                    serverId = serverId
+                                )
+                                postDao.updatePost(updatedEntity)
+                                
+                                // Si el userId cambió, actualizarlo explícitamente
+                                if (existingPost.userId != authorId) {
+                                    postDao.updatePostUserId(serverId, authorId)
+                                    android.util.Log.d("PostRepository", "userId actualizado explícitamente: serverId=$serverId, nuevo userId=$authorId (antes: ${existingPost.userId})")
+                                }
+                                
+                                android.util.Log.d("PostRepository", "Post ACTUALIZADO: serverId=$serverId, userId=$authorId (antes: ${existingPost.userId}), localId=${existingPost.id}, title=${postDto.title}")
+                            } else {
+                                val insertedId = postDao.insertPost(postEntity)
+                                android.util.Log.d("PostRepository", "Post INSERTADO: serverId=$serverId, userId=$authorId, localId=$insertedId, title=${postDto.title}")
+                            }
+                        } catch (e: Exception) {
+                            errorCount++
+                            android.util.Log.e("PostRepository", "Error guardando post del usuario: ${e.message}", e)
+                            e.printStackTrace()
+                        }
+                    }
+                }
+                
+                android.util.Log.d("PostRepository", "Posts del usuario refrescados: ${posts.size} recibidos, $savedCount insertados, $updatedCount actualizados, $errorCount errores")
+                
+                // Verificar que los posts se guardaron correctamente
+                val savedPosts = postDao.getPostsByUserId(userId).firstOrNull() ?: emptyList()
+                android.util.Log.d("PostRepository", "Posts guardados en DB para userId=$userId: ${savedPosts.size} posts")
+                savedPosts.forEach { entity ->
+                    android.util.Log.d("PostRepository", "  - Post en DB: localId=${entity.id}, serverId=${entity.serverId}, userId=${entity.userId}, title=${entity.title}")
+                }
+                
+                Resource.Success(Unit)
+            } else {
+                Resource.Error(Constants.ErrorMessages.NETWORK_ERROR)
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("PostRepository", "Error refrescando posts del usuario: ${e.message}", e)
+            Resource.Error(Constants.ErrorMessages.NETWORK_ERROR, e)
+        }
+    }
     
     /**
      * Guarda los comentarios de un post (incluyendo replies) en la base de datos local
@@ -783,5 +1078,130 @@ class PostRepositoryImpl @Inject constructor(
      */
     private suspend fun getCurrentUserId(): String {
         return sessionManager.userId.firstOrNull() ?: ""
+    }
+    
+    // ============================================================
+    // DRAFT POSTS IMPLEMENTATION
+    // ============================================================
+    
+    override fun getDrafts(): Flow<List<DraftPost>> {
+        return sessionManager.userId.flatMapLatest { userId ->
+            if (userId == null) {
+                kotlinx.coroutines.flow.flowOf(emptyList())
+            } else {
+                draftPostDao.getDraftsByUserId(userId).map { entities ->
+                    entities.map { it.toDomain() }
+                }
+            }
+        }
+    }
+    
+    override suspend fun getDraftById(id: Long): DraftPost? {
+        return draftPostDao.getDraftById(id)?.toDomain()
+    }
+    
+    override suspend fun saveDraft(draft: DraftPost): Resource<DraftPost> {
+        return try {
+            val userId = getCurrentUserId()
+            if (userId.isEmpty()) {
+                return Resource.Error("Usuario no autenticado")
+            }
+            
+            val draftEntity = draft.copy(userId = userId).toEntity()
+            val insertedId = draftPostDao.insertDraft(draftEntity)
+            val savedDraft = draft.copy(id = insertedId, userId = userId)
+            
+            Resource.Success(savedDraft)
+        } catch (e: Exception) {
+            android.util.Log.e("PostRepository", "Error guardando borrador: ${e.message}", e)
+            Resource.Error("Error al guardar borrador: ${e.message}", e)
+        }
+    }
+    
+    override suspend fun updateDraft(draft: DraftPost): Resource<DraftPost> {
+        return try {
+            val userId = getCurrentUserId()
+            if (userId.isEmpty()) {
+                return Resource.Error("Usuario no autenticado")
+            }
+            
+            val draftEntity = draft.copy(
+                userId = userId,
+                updatedAt = System.currentTimeMillis()
+            ).toEntity()
+            
+            draftPostDao.updateDraft(draftEntity)
+            Resource.Success(draft.copy(updatedAt = draftEntity.updatedAt))
+        } catch (e: Exception) {
+            android.util.Log.e("PostRepository", "Error actualizando borrador: ${e.message}", e)
+            Resource.Error("Error al actualizar borrador: ${e.message}", e)
+        }
+    }
+    
+    override suspend fun deleteDraft(id: Long): Resource<Unit> {
+        return try {
+            val draft = draftPostDao.getDraftById(id)
+            if (draft != null) {
+                draftPostDao.deleteDraft(draft)
+                Resource.Success(Unit)
+            } else {
+                Resource.Error("Borrador no encontrado")
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("PostRepository", "Error eliminando borrador: ${e.message}", e)
+            Resource.Error("Error al eliminar borrador: ${e.message}", e)
+        }
+    }
+    
+    override suspend fun publishDraft(draftId: Long, context: android.content.Context): Resource<Post> {
+        return try {
+            val draft = draftPostDao.getDraftById(draftId)
+            if (draft == null) {
+                return Resource.Error("Borrador no encontrado")
+            }
+            
+            val userId = getCurrentUserId()
+            if (userId.isEmpty()) {
+                return Resource.Error("Usuario no autenticado")
+            }
+            
+            // Convertir imágenes de base64 si es necesario
+            val draftDomain = draft.toDomain()
+            val imageBase64List = draftDomain.images
+            
+            // Crear el Post desde el borrador
+            val newPost = Post(
+                id = 0,
+                userId = userId,
+                user = null,
+                title = draftDomain.title.trim(),
+                description = draftDomain.description.trim(),
+                images = imageBase64List,
+                likes = 0,
+                dislikes = 0,
+                commentsCount = 0,
+                isLiked = false,
+                isDisliked = false,
+                isFavorite = false,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis(),
+                synced = false,
+                serverId = null
+            )
+            
+            // Crear el post
+            val createResult = createPost(newPost)
+            
+            // Si se creó exitosamente, eliminar el borrador
+            if (createResult is Resource.Success) {
+                draftPostDao.deleteDraftById(draftId)
+                Resource.Success(createResult.data)
+            } else {
+                createResult as Resource.Error
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("PostRepository", "Error publicando borrador: ${e.message}", e)
+            Resource.Error("Error al publicar borrador: ${e.message}", e)
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.pesgard.social_network_gera.data.local.AppDatabase
 import com.pesgard.social_network_gera.data.local.database.dao.CommentDao
+import com.pesgard.social_network_gera.data.local.database.dao.DraftPostDao
 import com.pesgard.social_network_gera.data.local.database.dao.FavoriteDao
 import com.pesgard.social_network_gera.data.local.database.dao.PostDao
 import com.pesgard.social_network_gera.data.local.database.dao.UserDao
@@ -69,6 +70,14 @@ object DatabaseModule {
     @Provides
     fun provideFavoriteDao(database: AppDatabase): FavoriteDao {
         return database.favoriteDao()
+    }
+    
+    /**
+     * Proporciona una instancia de DraftPostDao
+     */
+    @Provides
+    fun provideDraftPostDao(database: AppDatabase): DraftPostDao {
+        return database.draftPostDao()
     }
 }
 

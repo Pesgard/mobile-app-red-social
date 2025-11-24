@@ -2,6 +2,7 @@ package com.pesgard.social_network_gera.data.local.database.entity
 
 import com.pesgard.social_network_gera.data.local.database.Converters
 import com.pesgard.social_network_gera.domain.model.Comment
+import com.pesgard.social_network_gera.domain.model.DraftPost
 import com.pesgard.social_network_gera.domain.model.Post
 import com.pesgard.social_network_gera.domain.model.User
 
@@ -148,6 +149,42 @@ fun Comment.toEntity(): CommentEntity {
         updatedAt = updatedAt,
         synced = synced,
         serverId = serverId
+    )
+}
+
+// ============================================================
+// DRAFT POST CONVERSIONS
+// ============================================================
+
+/**
+ * Convierte DraftPostEntity a DraftPost (Domain Model)
+ */
+fun DraftPostEntity.toDomain(): DraftPost {
+    val converters = Converters()
+    return DraftPost(
+        id = id,
+        userId = userId,
+        title = title,
+        description = description.orEmpty(),
+        images = converters.fromStringList(images),
+        createdAt = createdAt,
+        updatedAt = updatedAt
+    )
+}
+
+/**
+ * Convierte DraftPost (Domain Model) a DraftPostEntity
+ */
+fun DraftPost.toEntity(): DraftPostEntity {
+    val converters = Converters()
+    return DraftPostEntity(
+        id = id,
+        userId = userId,
+        title = title,
+        description = description,
+        images = converters.toStringList(images),
+        createdAt = createdAt,
+        updatedAt = updatedAt
     )
 }
 

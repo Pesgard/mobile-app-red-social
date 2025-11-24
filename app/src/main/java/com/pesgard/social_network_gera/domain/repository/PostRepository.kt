@@ -1,5 +1,6 @@
 package com.pesgard.social_network_gera.domain.repository
 
+import com.pesgard.social_network_gera.domain.model.DraftPost
 import com.pesgard.social_network_gera.domain.model.Post
 import com.pesgard.social_network_gera.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -116,4 +117,62 @@ interface PostRepository {
      * @return Resource indicando éxito o error
      */
     suspend fun refreshPostById(serverId: String): Resource<Unit>
+    
+    /**
+     * Refresca los posts de un usuario específico desde el servidor
+     * @param userId ID del usuario (serverId)
+     * @return Resource indicando éxito o error
+     */
+    suspend fun refreshUserPosts(userId: String): Resource<Unit>
+    
+    /**
+     * Refresca los favoritos del usuario desde el servidor
+     * @return Resource indicando éxito o error
+     */
+    suspend fun refreshFavorites(): Resource<Unit>
+    
+    // ============================================================
+    // DRAFT POSTS METHODS
+    // ============================================================
+    
+    /**
+     * Obtiene todos los borradores del usuario actual
+     * @return Flow que emite la lista de borradores
+     */
+    fun getDrafts(): Flow<List<DraftPost>>
+    
+    /**
+     * Obtiene un borrador por su ID
+     * @param id ID del borrador
+     * @return Borrador o null si no existe
+     */
+    suspend fun getDraftById(id: Long): DraftPost?
+    
+    /**
+     * Guarda un borrador
+     * @param draft Borrador a guardar
+     * @return Resource con el borrador guardado o error
+     */
+    suspend fun saveDraft(draft: DraftPost): Resource<DraftPost>
+    
+    /**
+     * Actualiza un borrador existente
+     * @param draft Borrador con los datos actualizados
+     * @return Resource con el borrador actualizado o error
+     */
+    suspend fun updateDraft(draft: DraftPost): Resource<DraftPost>
+    
+    /**
+     * Elimina un borrador
+     * @param id ID del borrador a eliminar
+     * @return Resource indicando éxito o error
+     */
+    suspend fun deleteDraft(id: Long): Resource<Unit>
+    
+    /**
+     * Publica un borrador (lo convierte en post y lo elimina como borrador)
+     * @param draftId ID del borrador a publicar
+     * @return Resource con el post creado o error
+     */
+    suspend fun publishDraft(draftId: Long, context: android.content.Context): Resource<Post>
 }

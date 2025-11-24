@@ -136,6 +136,9 @@ fun AppNavGraph(
                 onNavigateToCreatePost = {
                     navController.navigate(Screen.CreatePost.route)
                 },
+                onNavigateToEditPost = { postId ->
+                    navController.navigate(Screen.EditPost.createRoute(postId))
+                },
                 onLogout = {
                     navController.navigate(Screen.Welcome.route) {
                         popUpTo(Screen.Welcome.route) { inclusive = true }
