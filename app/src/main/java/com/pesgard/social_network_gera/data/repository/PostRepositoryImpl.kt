@@ -567,7 +567,7 @@ class PostRepositoryImpl @Inject constructor(
                             val existingPost = postDao.getPostByServerId(serverId)
                             
                             val postEntity = if (existingPost != null) {
-                                // Actualizar post existente manteniendo el ID local
+                                // Actualizar post con el ID local
                                 post.toEntity().copy(
                                     id = existingPost.id,
                                     userId = authorId,
@@ -653,6 +653,12 @@ class PostRepositoryImpl @Inject constructor(
                 
                 android.util.Log.d("PostRepository", "Refrescando ${posts.size} posts desde el servidor")
                 
+                // Verificar si hay posts pendientes de sincronizar
+                val unsyncedPosts = postDao.getUnsyncedPosts().firstOrNull() ?: emptyList()
+                if (unsyncedPosts.isNotEmpty()) {
+                    android.util.Log.d("PostRepository", "HAY ${unsyncedPosts.size} POSTS PENDIENTES DE SINCRONIZAR - NO se eliminarán durante refresh")
+                }
+                
                 // Usar una transacción para garantizar atomicidad
                 database.withTransaction {
                     // Primero, recopilar todos los usuarios únicos de todos los posts
@@ -692,6 +698,12 @@ class PostRepositoryImpl @Inject constructor(
                             val existing = postDao.getPostByServerId(serverId)
                             
                             if (existing != null) {
+                                // NO actualizar si el post local no está sincronizado (proteger posts offline)
+                                if (!existing.synced) {
+                                    android.util.Log.d("PostRepository", "Post local NO sincronizado, preservando: serverId=$serverId, title=${existing.title}")
+                                    return@forEach
+                                }
+                                
                                 // Actualizar post existente manteniendo el ID local
                                 val updatedEntity = post.toEntity().copy(
                                     id = existing.id,
@@ -761,6 +773,8 @@ class PostRepositoryImpl @Inject constructor(
                 
                 // Buscar post existente por serverId para mantener ID local
                 val existingPost = postDao.getPostByServerId(serverId)
+                
+                android.util.Log.d("PostRepository", "Refrescando post: serverId=$serverId, existingPost=${existingPost?.id}")
                 
                 val postEntity = if (existingPost != null) {
                     // Actualizar post existente manteniendo el ID local
@@ -882,8 +896,12 @@ class PostRepositoryImpl @Inject constructor(
                                 
                                 android.util.Log.d("PostRepository", "Post ACTUALIZADO: serverId=$serverId, userId=$authorId (antes: ${existingPost.userId}), localId=${existingPost.id}, title=${postDto.title}")
                             } else {
+                                android.util.Log.d("PostRepository", "ANTES DE INSERTAR - postEntity.serverId=${postEntity.serverId}, serverId original=$serverId")
                                 val insertedId = postDao.insertPost(postEntity)
                                 android.util.Log.d("PostRepository", "Post INSERTADO: serverId=$serverId, userId=$authorId, localId=$insertedId, title=${postDto.title}")
+                                // Verificar inmediatamente que se guardó
+                                val verifyPost = postDao.getPostByServerId(serverId)
+                                android.util.Log.d("PostRepository", "VERIFICACIÓN POST GUARDADO: encontrado=${verifyPost != null}, serverId en DB=${verifyPost?.serverId}")
                             }
                         } catch (e: Exception) {
                             errorCount++
@@ -922,6 +940,8 @@ class PostRepositoryImpl @Inject constructor(
         localPostId: Long,
         comments: List<com.pesgard.social_network_gera.data.remote.dto.CommentDto>
     ) {
+        android.util.Log.d("PostRepository", "saveCommentsFromPost: Guardando ${comments.size} comentarios para postId local: $localPostId")
+        
         // Usar transacción para asegurar atomicidad
         database.withTransaction {
             // Paso 1: Recolectar todos los usuarios únicos de todos los comentarios y replies
@@ -1017,9 +1037,12 @@ class PostRepositoryImpl @Inject constructor(
                 // Guardar comentario
                 val localCommentId = if (existingComment != null) {
                     commentDao.updateComment(commentEntity)
+                    android.util.Log.d("PostRepository", "Comentario actualizado: localId=${existingComment.id}, serverId=${commentDto.id}, postId=$localPostId")
                     existingComment.id
                 } else {
-                    commentDao.insertComment(commentEntity)
+                    val newId = commentDao.insertComment(commentEntity)
+                    android.util.Log.d("PostRepository", "Comentario insertado: localId=$newId, serverId=${commentDto.id}, postId=$localPostId, texto=${commentDto.text.take(30)}")
+                    newId
                 }
                 
                 // Paso 4: Guardar replies del comentario

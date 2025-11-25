@@ -69,8 +69,8 @@ fun FavoritesScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = com.pesgard.social_network_gera.ui.theme.AppBarColor,
+                    titleContentColor = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                 )
             )
         }

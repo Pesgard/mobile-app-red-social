@@ -246,5 +246,40 @@ fun <T> List<T>?.orEmpty(): List<T> {
     return this ?: emptyList()
 }
 
+// ============================================================
+// IMAGE EXTENSIONS
+// ============================================================
+
+/**
+ * Asegura que una URL de imagen base64 tenga el prefijo correcto
+ * Si la imagen ya tiene el prefijo data:image, la retorna tal cual
+ * Si es una URL http/https, la retorna tal cual
+ * Si es solo base64 sin prefijo, le agrega "data:image/jpeg;base64,"
+ * @return String con el formato correcto para mostrar en AsyncImage
+ */
+fun String.ensureImagePrefix(): String {
+    return when {
+        // Ya tiene el prefijo correcto
+        this.startsWith("data:image/", ignoreCase = true) -> this
+        // Es una URL externa
+        this.startsWith("http://", ignoreCase = true) || 
+        this.startsWith("https://", ignoreCase = true) -> this
+        // Es base64 sin prefijo, agregar prefijo
+        this.isNotBlank() && !this.startsWith("data:", ignoreCase = true) -> {
+            android.util.Log.d("ImageExtension", "Adding prefix to base64 image")
+            "data:image/jpeg;base64,$this"
+        }
+        // Vacío o inválido
+        else -> this
+    }
+}
+
+/**
+ * Convierte una lista de imágenes asegurando que todas tengan el prefijo correcto
+ */
+fun List<String>.ensureImagePrefixes(): List<String> {
+    return this.map { it.ensureImagePrefix() }
+}
+
 
 

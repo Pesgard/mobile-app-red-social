@@ -104,6 +104,9 @@ fun AppNavGraph(
                 },
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile.route)
+                },
+                onNavigateToEditPost = { postId ->
+                    navController.navigate(Screen.EditPost.createRoute(postId))
                 }
             )
         }
@@ -148,8 +151,14 @@ fun AppNavGraph(
         }
 
         composable(Screen.Settings.route) {
-            // TODO: Implementar SettingsScreen (cambiar contraseña, etc.)
-            androidx.compose.material3.Text("Settings Screen - TODO")
+            val settingsVM: com.pesgard.social_network_gera.presentation.settings.SettingsViewModel = hiltViewModel()
+            
+            com.pesgard.social_network_gera.presentation.settings.SettingsScreen(
+                viewModel = settingsVM,
+                onNavigateBack = {
+                    navController.popBackStack()
+                }
+            )
         }
 
         // ============================================================

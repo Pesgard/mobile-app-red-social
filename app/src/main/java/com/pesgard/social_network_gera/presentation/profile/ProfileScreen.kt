@@ -2,6 +2,7 @@ package com.pesgard.social_network_gera.presentation.profile
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import com.pesgard.social_network_gera.util.ensureImagePrefix
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,6 +59,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -70,6 +72,7 @@ import com.pesgard.social_network_gera.ui.theme.ConnectaDimensions
 import com.pesgard.social_network_gera.ui.theme.ConnectaSpacing
 import com.pesgard.social_network_gera.ui.theme.ConnectaTypography
 import com.pesgard.social_network_gera.ui.theme.ConnectaTypographyExtensions
+import com.pesgard.social_network_gera.ui.theme.SurfaceLight
 import com.pesgard.social_network_gera.util.toRelativeTimeString
 
 /**
@@ -124,8 +127,8 @@ fun ProfileScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = com.pesgard.social_network_gera.ui.theme.AppBarColor,
+                    titleContentColor = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                 )
             )
         }
@@ -333,7 +336,7 @@ fun ProfileScreen(
  * PostCard con menú de opciones para editar/eliminar
  */
 @Composable
-private fun PostCardWithMenu(
+fun PostCardWithMenu(
     post: com.pesgard.social_network_gera.domain.model.Post,
     isAuthor: Boolean,
     onPostClick: () -> Unit,
@@ -420,10 +423,11 @@ private fun PostCardWithMenu(
                         
                         DropdownMenu(
                             expanded = showMenu,
-                            onDismissRequest = { showMenu = false }
+                            onDismissRequest = { showMenu = false },
+                            containerColor = SurfaceLight
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Editar") },
+                                text = { Text("Editar", color = Color.White) },
                                 onClick = {
                                     showMenu = false
                                     onEditClick()
@@ -488,7 +492,7 @@ private fun PostCardWithMenu(
             if (post.images.isNotEmpty()) {
                 if (post.images.size == 1) {
                     AsyncImage(
-                        model = post.images[0],
+                        model = post.images[0].ensureImagePrefix(),
                         contentDescription = "Imagen del post",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -498,7 +502,7 @@ private fun PostCardWithMenu(
                     )
                 } else {
                     com.pesgard.social_network_gera.ui.components.ImageCarousel(
-                        images = post.images,
+                        images = post.images.map { it.ensureImagePrefix() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)

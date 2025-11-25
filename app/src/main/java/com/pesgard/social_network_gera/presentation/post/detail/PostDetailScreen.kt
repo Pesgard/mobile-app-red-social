@@ -75,14 +75,14 @@ fun PostDetailScreen(
 
     // Cargar post cuando se monta la pantalla
     LaunchedEffect(postId, serverId) {
-        if (serverId != null && serverId.isNotBlank()) {
-            // Si tenemos serverId, intentar cargar directamente desde el servidor (más eficiente)
+        if (postId != 0L) {
+            // Si tenemos postId local, usarlo directamente (evita duplicados)
+            android.util.Log.d("PostDetailScreen", "Cargando post con postId local: $postId")
+            viewModel.loadPost(postId, serverId)
+        } else if (serverId != null && serverId.isNotBlank()) {
+            // Solo si NO tenemos postId local, intentar cargar por serverId
             android.util.Log.d("PostDetailScreen", "Cargando post con serverId: $serverId")
             viewModel.loadPostByServerId(serverId)
-        } else if (postId != 0L) {
-            // Si no tenemos serverId pero tenemos postId válido, intentar cargar por ID local
-            android.util.Log.d("PostDetailScreen", "Cargando post con postId local: $postId")
-            viewModel.loadPost(postId, null)
         } else {
             // No tenemos ni serverId ni postId válido
             android.util.Log.w("PostDetailScreen", "No se proporcionó serverId ni postId válido")
@@ -137,8 +137,8 @@ fun PostDetailScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = com.pesgard.social_network_gera.ui.theme.AppBarColor,
+                    titleContentColor = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                 )
             )
         }

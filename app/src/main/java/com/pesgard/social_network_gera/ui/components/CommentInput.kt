@@ -24,6 +24,7 @@ import com.pesgard.social_network_gera.domain.model.Comment
 import com.pesgard.social_network_gera.ui.theme.ConnectaDimensions
 import com.pesgard.social_network_gera.ui.theme.ConnectaSpacing
 import com.pesgard.social_network_gera.ui.theme.Primary
+import com.pesgard.social_network_gera.ui.theme.AppBarColor
 
 /**
  * Componente de input para comentarios
@@ -64,7 +65,7 @@ fun CommentInput(
             singleLine = false,
             maxLines = 4,
             colors = OutlinedTextFieldDefaults.colors(
-                focusedBorderColor = Primary,
+                focusedBorderColor = AppBarColor,
                 unfocusedBorderColor = MaterialTheme.colorScheme.outline,
                 focusedContainerColor = MaterialTheme.colorScheme.surface,
                 unfocusedContainerColor = MaterialTheme.colorScheme.surface
@@ -90,7 +91,7 @@ fun CommentInput(
                     imageVector = Icons.Default.Send,
                     contentDescription = "Enviar comentario",
                     tint = if (text.trim().isNotEmpty() && !isSubmitting) {
-                        Primary
+                        AppBarColor
                     } else {
                         MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
                     },

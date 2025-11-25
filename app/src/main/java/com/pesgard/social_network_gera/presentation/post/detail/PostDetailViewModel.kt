@@ -67,8 +67,10 @@ class PostDetailViewModel @Inject constructor(
                 // El post existe localmente, observar cambios y refrescar si es necesario
                 firstPost = localPost
                 
+                // DESHABILITADO: Esto causa posts duplicados y pérdida de comentarios locales
                 // Si el post tiene serverId y hay conexión, refrescar desde el servidor
                 // para obtener los comentarios más recientes
+                /*
                 if (!localPost.serverId.isNullOrEmpty() && networkMonitor.isOnline()) {
                     postRepository.refreshPostById(localPost.serverId).let { result ->
                         if (result is Resource.Error) {
@@ -78,6 +80,7 @@ class PostDetailViewModel @Inject constructor(
                         }
                     }
                 }
+                */
                 
                 // Observar cambios en el post
                 postRepository.getPostById(postId).collect { post ->
@@ -145,7 +148,12 @@ class PostDetailViewModel @Inject constructor(
         commentsJob?.cancel()
         commentsJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoadingComments = true) }
+            android.util.Log.d("PostDetailViewModel", "Cargando comentarios para postId: $postId")
             commentRepository.getCommentsByPostId(postId).collect { comments ->
+                android.util.Log.d("PostDetailViewModel", "Comentarios recibidos: ${comments.size} para postId: $postId")
+                comments.forEach { comment ->
+                    android.util.Log.d("PostDetailViewModel", "  - Comentario ID: ${comment.id}, postId: ${comment.postId}, texto: ${comment.text.take(50)}")
+                }
                 _uiState.update { currentState ->
                     currentState.copy(
                         comments = comments,
@@ -250,6 +258,8 @@ class PostDetailViewModel @Inject constructor(
                 synced = false,
                 serverId = null
             )
+
+            android.util.Log.d("PostDetailViewModel", "Creando comentario para postId: ${post.id}, userId: $userId, texto: $text")
 
             val result = if (replyingTo != null) {
                 // Es una respuesta

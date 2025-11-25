@@ -20,7 +20,7 @@ class SyncManager @Inject constructor(
 ){
     companion object {
         private const val SYNC_WORK_NAME = "sync_work"
-        private const val SYNC_INTERVAL_HOURS = 1L // Sincronizar cada hora
+        private const val SYNC_INTERVAL_MINUTES = 15L // Sincronizar cada 15 minutos
     }
 
     private val workManager = WorkManager.getInstance(context)
@@ -29,23 +29,27 @@ class SyncManager @Inject constructor(
      * Inicia la sincronización periódica automática
      */
     fun startPeriodicSync() {
+        // Cancelar trabajo anterior para evitar estados inconsistentes
+        workManager.cancelUniqueWork(SYNC_WORK_NAME)
+        
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(true)
             .build()
 
         val syncWorkRequest = PeriodicWorkRequestBuilder<SyncWorker>(
-            SYNC_INTERVAL_HOURS,
-            TimeUnit.HOURS
+            SYNC_INTERVAL_MINUTES,
+            TimeUnit.MINUTES
         )
             .setConstraints(constraints)
             .build()
 
         workManager.enqueueUniquePeriodicWork(
             SYNC_WORK_NAME,
-            ExistingPeriodicWorkPolicy.KEEP, // Mantener el trabajo existente si ya está programado
+            ExistingPeriodicWorkPolicy.REPLACE,  // REPLACE en lugar de KEEP
             syncWorkRequest
         )
+        
+        android.util.Log.d("SyncManager", "Sincronización periódica iniciada (cada $SYNC_INTERVAL_MINUTES minutos)")
     }
 
     /**

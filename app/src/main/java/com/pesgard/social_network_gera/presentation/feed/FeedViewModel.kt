@@ -2,12 +2,14 @@ package com.pesgard.social_network_gera.presentation.feed
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.pesgard.social_network_gera.data.local.datastore.SessionManager
 import com.pesgard.social_network_gera.domain.repository.PostRepository
 import com.pesgard.social_network_gera.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,7 +23,8 @@ data class FeedUiState(
     val searchQuery: String = "",
     val isLoading: Boolean = true,
     val error: String? = null,
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val currentUserId: String? = null
 )
 
 /**
@@ -29,7 +32,8 @@ data class FeedUiState(
  */
 @HiltViewModel
 class FeedViewModel @Inject constructor(
-    private val postRepository: PostRepository
+    private val postRepository: PostRepository,
+    private val sessionManager: SessionManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(FeedUiState())
@@ -40,14 +44,29 @@ class FeedViewModel @Inject constructor(
     init {
         // Cargar posts desde el servidor al iniciar
         initialLoad()
+        // Cargar userId actual
+        loadCurrentUserId()
+    }
+    
+    /**
+     * Carga el ID del usuario actual
+     */
+    private fun loadCurrentUserId() {
+        viewModelScope.launch {
+            val userId = sessionManager.userId.firstOrNull()
+            _uiState.update { it.copy(currentUserId = userId) }
+        }
     }
 
     /**
-     * Carga inicial: primero refresca desde el servidor, luego observa cambios
+     * Carga inicial: primero sincroniza, luego refresca desde el servidor y finalmente observa cambios
      */
     private fun initialLoad() {
         viewModelScope.launch {
-            // Primero refrescar desde el servidor
+            // Primero, intentar sincronizar los posts pendientes
+            postRepository.syncPosts()
+
+            // Luego, refrescar desde el servidor
             val refreshResult = postRepository.refreshPosts()
             
             // Iniciar observación de posts (solo una vez)
@@ -96,6 +115,7 @@ class FeedViewModel @Inject constructor(
     fun refreshPosts() {
         _uiState.update { it.copy(isRefreshing = true, error = null) }
         viewModelScope.launch {
+            postRepository.syncPosts()
             val result = postRepository.refreshPosts()
             _uiState.update { currentState ->
                 currentState.copy(
@@ -169,6 +189,19 @@ class FeedViewModel @Inject constructor(
                 postRepository.unfavoritePost(postId)
             } else {
                 postRepository.favoritePost(postId)
+            }
+            // El estado se actualizará automáticamente a través del Flow de getPosts()
+        }
+    }
+    
+    /**
+     * Elimina un post
+     */
+    fun deletePost(postId: Long) {
+        viewModelScope.launch {
+            val result = postRepository.deletePost(postId)
+            if (result is Resource.Error) {
+                _uiState.update { it.copy(error = result.message) }
             }
             // El estado se actualizará automáticamente a través del Flow de getPosts()
         }

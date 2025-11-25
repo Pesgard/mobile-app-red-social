@@ -32,7 +32,12 @@ class CommentRepositoryImpl @Inject constructor(
 ) : CommentRepository {
 
     override fun getCommentsByPostId(postId: Long): Flow<List<Comment>> {
+        android.util.Log.d("CommentRepository", "getCommentsByPostId llamado con postId: $postId")
         return commentDao.getCommentsByPostId(postId).map { entities ->
+            android.util.Log.d("CommentRepository", "Comentarios encontrados en DB: ${entities.size}")
+            entities.forEachIndexed { index, entity ->
+                android.util.Log.d("CommentRepository", "  [$index] CommentId: ${entity.id}, postId: ${entity.postId}, userId: ${entity.userId}, texto: ${entity.text.take(30)}")
+            }
             // Convertir comentarios de nivel superior y cargar replies
             entities.map { entity ->
                 // Obtener UserEntity (no convertirlo a User todavía)

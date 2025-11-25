@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import com.pesgard.social_network_gera.util.ensureImagePrefix
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -158,21 +159,32 @@ fun PostCard(
 
             // Imágenes
             if (post.images.isNotEmpty()) {
+                android.util.Log.d("PostCard", "Post has ${post.images.size} images")
+                post.images.forEachIndexed { index, image ->
+                    android.util.Log.d("PostCard", "Image $index: ${image.take(100)}...") // Mostrar primeros 100 chars
+                }
+                
                 if (post.images.size == 1) {
                     // Imagen única
                     AsyncImage(
-                        model = post.images[0],
+                        model = post.images[0].ensureImagePrefix(),
                         contentDescription = "Imagen del post",
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(1f)
                             .clip(ConnectaCustomShapes.postImage),
-                        contentScale = ContentScale.Crop
+                        contentScale = ContentScale.Crop,
+                        onError = { error ->
+                            android.util.Log.e("PostCard", "Error loading image: ${post.images[0]}", error.result.throwable)
+                        },
+                        onSuccess = {
+                            android.util.Log.d("PostCard", "Image loaded successfully")
+                        }
                     )
                 } else {
                     // Múltiples imágenes - usar carousel
                     ImageCarousel(
-                        images = post.images,
+                        images = post.images.map { it.ensureImagePrefix() },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(300.dp)

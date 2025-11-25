@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Publish
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -52,6 +53,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,6 +65,8 @@ import com.pesgard.social_network_gera.ui.theme.ConnectaSpacing
 import com.pesgard.social_network_gera.ui.theme.ConnectaTypography
 import com.pesgard.social_network_gera.ui.theme.ConnectaTypographyExtensions
 import com.pesgard.social_network_gera.ui.theme.Primary
+import com.pesgard.social_network_gera.ui.theme.AppBarColor
+import com.pesgard.social_network_gera.ui.theme.SurfaceLight
 
 /**
  * Pantalla para crear una nueva publicación
@@ -126,8 +130,8 @@ fun CreatePostScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = com.pesgard.social_network_gera.ui.theme.AppBarColor,
+                    titleContentColor = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                 )
             )
         }
@@ -261,7 +265,11 @@ fun CreatePostScreen(
                                     }
                                 },
                                 enabled = uiState.canSubmit && !uiState.isSubmitting,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = AppBarColor,
+                                    contentColor = Color.White
+                                )
                             ) {
                                 Text(
                                     text = if (uiState.isSubmitting) "Publicando..." else "Publicar"
@@ -381,10 +389,11 @@ private fun DraftItem(
                     
                     DropdownMenu(
                         expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
+                        onDismissRequest = { showMenu = false },
+                        containerColor = SurfaceLight
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Editar") },
+                            text = { Text("Editar", color = Color.White) },
                             onClick = {
                                 showMenu = false
                                 onEditClick()
@@ -394,7 +403,7 @@ private fun DraftItem(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Publicar") },
+                            text = { Text("Publicar", color = Color.White) },
                             onClick = {
                                 showMenu = false
                                 onPublishClick()

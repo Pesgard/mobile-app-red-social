@@ -32,16 +32,28 @@ class SyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         return try {
+            android.util.Log.d("SyncWorker", "=== INICIANDO SINCRONIZACIÓN ===")
+            
             // Verificar conexión
             if (!networkMonitor.isOnline()) {
+                android.util.Log.w("SyncWorker", "Sin conexión a internet, reintentando más tarde")
                 return Result.retry() // Reintentar más tarde
             }
+            
+            android.util.Log.d("SyncWorker", "Conexión disponible, buscando posts pendientes...")
 
             // Obtener posts no sincronizados
             val unsyncedPosts = postDao.getUnsyncedPosts().firstOrNull() ?: emptyList()
+            
+            android.util.Log.d("SyncWorker", "Posts pendientes encontrados: ${unsyncedPosts.size}")
 
             if (unsyncedPosts.isEmpty()) {
+                android.util.Log.d("SyncWorker", "No hay posts pendientes de sincronizar")
                 return Result.success() // No hay nada que sincronizar
+            }
+            
+            unsyncedPosts.forEach { post ->
+                android.util.Log.d("SyncWorker", "Post pendiente - ID: ${post.id}, Titulo: ${post.title}, Imágenes: ${post.images.length} chars")
             }
 
             // Convertir a DTOs para el request
@@ -72,24 +84,39 @@ class SyncWorker @AssistedInject constructor(
 
             // Enviar al servidor
             val request = SyncRequest(pendingPosts = pendingPosts)
+            android.util.Log.d("SyncWorker", "Enviando ${pendingPosts.size} posts al servidor...")
+            android.util.Log.d("SyncWorker", "Request JSON: pendingPosts=${pendingPosts.map { "ID:${it.localId}, Title:${it.title}" }}")
+            
             val response = apiService.sync(request)
+            
+            android.util.Log.d("SyncWorker", "Respuesta del servidor: Code=${response.code()}, Success=${response.isSuccessful}")
 
             if (response.isSuccessful && response.body() != null) {
                 val syncResponse = response.body()!!
+                android.util.Log.d("SyncWorker", "Posts sincronizados exitosamente: ${syncResponse.synced.size}")
                 
                 // Actualizar posts con serverId
                 syncResponse.synced.forEach { syncedPost ->
                     val localId = syncedPost.localId.toLongOrNull()
+                    android.util.Log.d("SyncWorker", "Actualizando post local ID: $localId con serverId: ${syncedPost.serverId}")
                     if (localId != null) {
                         postDao.markAsSynced(localId, syncedPost.serverId.toString())
+                        android.util.Log.d("SyncWorker", "Post $localId marcado como sincronizado ✅")
+                    } else {
+                        android.util.Log.e("SyncWorker", "ERROR: No se pudo convertir localId: ${syncedPost.localId}")
                     }
                 }
 
+                android.util.Log.d("SyncWorker", "=== SINCRONIZACIÓN COMPLETADA EXITOSAMENTE ===")
                 Result.success()
             } else {
+                val errorBody = response.errorBody()?.string()
+                android.util.Log.e("SyncWorker", "ERROR en respuesta del servidor: Code=${response.code()}, Error=$errorBody")
                 Result.retry() // Reintentar si falla
             }
         } catch (e: Exception) {
+            android.util.Log.e("SyncWorker", "EXCEPCIÓN durante sincronización: ${e.message}", e)
+            e.printStackTrace()
             Result.retry() // Reintentar en caso de error
         }
     }

@@ -1,17 +1,28 @@
 package com.pesgard.social_network_gera.presentation.profile.edit
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,9 +37,16 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.pesgard.social_network_gera.ui.components.EmptyState
 import com.pesgard.social_network_gera.ui.components.FullScreenLoadingIndicator
 import com.pesgard.social_network_gera.ui.theme.ConnectaCustomShapes
@@ -36,6 +54,7 @@ import com.pesgard.social_network_gera.ui.theme.ConnectaSpacing
 import com.pesgard.social_network_gera.ui.theme.ConnectaTypography
 import com.pesgard.social_network_gera.ui.theme.ConnectaTypographyExtensions
 import com.pesgard.social_network_gera.ui.theme.Primary
+import kotlinx.coroutines.launch
 
 /**
  * Pantalla para editar el perfil del usuario
@@ -48,6 +67,20 @@ fun EditProfileScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    
+    // Launcher para seleccionar imagen
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            viewModel.selectAvatarImage(it)
+            scope.launch {
+                viewModel.convertAvatarToBase64(context)
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -72,7 +105,7 @@ fun EditProfileScreen(
                 actions = {
                     TextButton(
                         onClick = {
-                            viewModel.saveProfile(onNavigateBack)
+                            viewModel.saveProfile(context, onNavigateBack)
                         },
                         enabled = uiState.canSubmit && !uiState.isSubmitting
                     ) {
@@ -87,8 +120,8 @@ fun EditProfileScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = com.pesgard.social_network_gera.ui.theme.AppBarColor,
+                    titleContentColor = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                 )
             )
         }
@@ -173,6 +206,67 @@ fun EditProfileScreen(
                             )
                         }
                         
+                        // Selector de avatar
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(ConnectaSpacing.small)
+                        ) {
+                            Text(
+                                text = "Foto de perfil",
+                                style = ConnectaTypography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            
+                            Box(
+                                modifier = Modifier
+                                    .size(120.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .border(2.dp, Primary, CircleShape)
+                                    .clickable { imagePickerLauncher.launch("image/*") },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (uiState.selectedAvatarUri != null || uiState.avatarUrl.isNotEmpty()) {
+                                    AsyncImage(
+                                        model = uiState.selectedAvatarUri ?: uiState.avatarUrl,
+                                        contentDescription = "Avatar",
+                                        modifier = Modifier.fillMaxSize(),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                    
+                                    // Icono de cámara superpuesto
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .background(Color.Black.copy(alpha = 0.3f)),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.CameraAlt,
+                                            contentDescription = "Cambiar foto",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(32.dp)
+                                        )
+                                    }
+                                } else {
+                                    Icon(
+                                        imageVector = Icons.Default.CameraAlt,
+                                        contentDescription = "Seleccionar foto",
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        modifier = Modifier.size(48.dp)
+                                    )
+                                }
+                            }
+                            
+                            Text(
+                                text = if (uiState.isConvertingImage) "Procesando imagen..." else "Toca para cambiar",
+                                style = ConnectaTypography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        
                         // Campo de alias
                         OutlinedTextField(
                             value = uiState.alias,
@@ -232,28 +326,6 @@ fun EditProfileScreen(
                                 unfocusedBorderColor = MaterialTheme.colorScheme.outline
                             ),
                             shape = ConnectaCustomShapes.input
-                        )
-
-                        // Campo de URL del avatar
-                        OutlinedTextField(
-                            value = uiState.avatarUrl,
-                            onValueChange = { viewModel.updateAvatarUrl(it) },
-                            label = { Text("URL del Avatar") },
-                            placeholder = { Text("https://...") },
-                            modifier = Modifier.fillMaxWidth(),
-                            singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Primary,
-                                unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                            ),
-                            shape = ConnectaCustomShapes.input,
-                            supportingText = {
-                                Text(
-                                    text = "URL de la imagen de perfil",
-                                    style = ConnectaTypography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
                         )
 
                         // Mensaje de error

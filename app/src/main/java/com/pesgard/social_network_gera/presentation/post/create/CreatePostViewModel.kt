@@ -108,9 +108,23 @@ class CreatePostViewModel @Inject constructor(
      */
     private suspend fun convertUriToBase64(uri: Uri, context: android.content.Context): String? {
         return try {
+            android.util.Log.d("CreatePostVM", "Converting URI to base64: $uri")
+            
             val inputStream = context.contentResolver.openInputStream(uri)
+            if (inputStream == null) {
+                android.util.Log.e("CreatePostVM", "Failed to open input stream for URI: $uri")
+                return null
+            }
+            
             val bitmap = BitmapFactory.decodeStream(inputStream)
-            inputStream?.close()
+            inputStream.close()
+            
+            if (bitmap == null) {
+                android.util.Log.e("CreatePostVM", "Failed to decode bitmap from URI: $uri")
+                return null
+            }
+            
+            android.util.Log.d("CreatePostVM", "Bitmap decoded: ${bitmap.width}x${bitmap.height}")
 
             // Comprimir imagen (máximo 1024x1024 para reducir tamaño)
             val maxDimension = 1024
@@ -130,8 +144,13 @@ class CreatePostViewModel @Inject constructor(
             val outputStream = ByteArrayOutputStream()
             scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 85, outputStream)
             val imageBytes = outputStream.toByteArray()
-            Base64.encodeToString(imageBytes, Base64.NO_WRAP)
+            val base64String = "data:image/jpeg;base64," + Base64.encodeToString(imageBytes, Base64.NO_WRAP)
+            
+            android.util.Log.d("CreatePostVM", "Image converted to base64 successfully. Size: ${imageBytes.size} bytes")
+            
+            base64String
         } catch (e: Exception) {
+            android.util.Log.e("CreatePostVM", "Error converting URI to base64: ${e.message}", e)
             null
         }
     }
@@ -141,23 +160,29 @@ class CreatePostViewModel @Inject constructor(
      */
     suspend fun convertImagesToBase64(context: android.content.Context) {
         _uiState.update { it.copy(isLoading = true, error = null) }
+        
+        android.util.Log.d("CreatePostVM", "Starting image conversion. Total images: ${_uiState.value.selectedImages.size}")
 
         val base64List = mutableListOf<String>()
-        for (uri in _uiState.value.selectedImages) {
+        for ((index, uri) in _uiState.value.selectedImages.withIndex()) {
+            android.util.Log.d("CreatePostVM", "Converting image ${index + 1}/${_uiState.value.selectedImages.size}")
             val base64 = convertUriToBase64(uri, context)
             if (base64 != null) {
                 base64List.add(base64)
+                android.util.Log.d("CreatePostVM", "Image ${index + 1} converted successfully")
             } else {
+                android.util.Log.e("CreatePostVM", "Failed to convert image ${index + 1}")
                 _uiState.update { 
                     it.copy(
                         isLoading = false,
-                        error = "Error al procesar una imagen"
+                        error = "Error al procesar la imagen ${index + 1}. Verifica que el archivo sea válido."
                     )
                 }
                 return
             }
         }
 
+        android.util.Log.d("CreatePostVM", "All images converted successfully. Total: ${base64List.size}")
         _uiState.update { 
             it.copy(
                 imageBase64List = base64List,

@@ -6,22 +6,26 @@ import androidx.compose.ui.graphics.Color
 // PALETA DE COLORES BASE
 // ============================================================
 
-// Primary - Azul característico de la app
-val Primary = Color(0xFF0DA6F2)
-val PrimaryVariant = Color(0xFF4A90E2)
+// Primary - Negro característico de la app
+val Primary = Color(0xFF000000)
+val PrimaryVariant = Color(0xFFFF8C00) // Anaranjado para AppBar
 
 // Backgrounds
-val BackgroundLight = Color(0xFFF5F7F8)
-val BackgroundDark = Color(0xFF101C22)
+val BackgroundLight = Color(0xFF000000)
+val BackgroundDark = Color(0xFF000000)
 
 // Surfaces (Cards, etc)
-val SurfaceLight = Color(0xFFFFFFFF)
-val SurfaceDark = Color(0xFF192730)
-val SurfaceDarkAlt = Color(0xFF1B2327)
+val SurfaceLight = Color(0xFF1E1E1E) // Gris oscuro para posts
+val SurfaceDark = Color(0xFF1E1E1E) // Gris oscuro
+val SurfaceDarkAlt = Color(0xFF2D2D2D) // Gris un poco más claro
+
+// AppBar Colors
+val AppBarColor = Color(0xFFFF8C00) // Anaranjado para AppBar
+val AppBarTextColor = Color(0xFFFFFFFF) // Blanco para texto del AppBar
 
 // Text Colors - Light Mode
-val TextPrimaryLight = Color(0xFF212121)
-val TextSecondaryLight = Color(0xFF757575)
+val TextPrimaryLight = Color(0xFFFFFFFF) // Blanco para fondos oscuros
+val TextSecondaryLight = Color(0xFFB0B0B0) // Gris claro
 val TextTertiaryLight = Color(0xFF888888)
 
 // Text Colors - Dark Mode
@@ -76,6 +80,10 @@ object ConnectaColors {
     val surfaceLight = SurfaceLight
     val surfaceDark = SurfaceDark
     val surfaceDarkAlt = SurfaceDarkAlt
+    
+    // AppBar
+    val appBarColor = AppBarColor
+    val appBarTextColor = AppBarTextColor
 
     // Text
     val textPrimaryLight = TextPrimaryLight

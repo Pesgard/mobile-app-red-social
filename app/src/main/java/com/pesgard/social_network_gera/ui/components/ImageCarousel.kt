@@ -49,7 +49,13 @@ fun ImageCarousel(
             model = images[currentIndex],
             contentDescription = "Imagen ${currentIndex + 1} de ${images.size}",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            onError = { error ->
+                android.util.Log.e("ImageCarousel", "Error loading image ${currentIndex + 1}: ${images[currentIndex]}", error.result.throwable)
+            },
+            onSuccess = {
+                android.util.Log.d("ImageCarousel", "Image ${currentIndex + 1} loaded successfully")
+            }
         )
 
         // Indicadores de página (solo si hay más de una imagen)

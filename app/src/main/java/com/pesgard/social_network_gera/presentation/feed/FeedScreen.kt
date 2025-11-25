@@ -59,11 +59,14 @@ fun FeedScreen(
     onNavigateToPostDetail: (Long, String?) -> Unit,
     onNavigateToCreatePost: () -> Unit,
     onNavigateToProfile: () -> Unit,
+    onNavigateToEditPost: (Long) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showSearchBar by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var postToDelete by remember { mutableStateOf<com.pesgard.social_network_gera.domain.model.Post?>(null) }
 
     // Actualizar búsqueda cuando cambia el query
     LaunchedEffect(searchQuery) {
@@ -76,7 +79,7 @@ fun FeedScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = "Connecta",
+                        text = "MeetBand",
                         style = ConnectaTypographyExtensions.appBarTitle,
                         fontWeight = FontWeight.Bold
                     )
@@ -98,7 +101,7 @@ fun FeedScreen(
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = "Buscar",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                         )
                     }
                     // Botón de crear post
@@ -106,7 +109,7 @@ fun FeedScreen(
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Crear publicación",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                         )
                     }
                     // Botón de perfil
@@ -114,13 +117,13 @@ fun FeedScreen(
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Perfil",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface
+                    containerColor = com.pesgard.social_network_gera.ui.theme.AppBarColor,
+                    titleContentColor = com.pesgard.social_network_gera.ui.theme.AppBarTextColor
                 )
             )
         }
@@ -186,14 +189,43 @@ fun FeedScreen(
                                 items = uiState.filteredPosts,
                                 key = { post -> post.id }
                             ) { post ->
-                                    PostCard(
+                                val isAuthor = uiState.currentUserId == post.userId
+                                
+                                if (isAuthor) {
+                                    // Si es el autor, usar componente del Profile con menú
+                                    com.pesgard.social_network_gera.presentation.profile.PostCardWithMenu(
                                         post = post,
+                                        isAuthor = isAuthor,
                                         onPostClick = {
-                                            // Usar id local (Long) para navegación
                                             onNavigateToPostDetail(post.id, post.serverId)
                                         },
                                         onLikeClick = {
-                                            // Usar id local para acciones
+                                            viewModel.likePost(post.id)
+                                        },
+                                        onDislikeClick = {
+                                            viewModel.dislikePost(post.id)
+                                        },
+                                        onFavoriteClick = {
+                                            viewModel.toggleFavorite(post.id, post.isFavorite)
+                                        },
+                                        onCommentClick = {
+                                            onNavigateToPostDetail(post.id, post.serverId)
+                                        },
+                                        onEditClick = {
+                                            onNavigateToEditPost(post.id)
+                                        },
+                                        onDeleteClick = {
+                                            postToDelete = post
+                                            showDeleteDialog = true
+                                        }
+                                    )
+                                } else {
+                                    PostCard(
+                                        post = post,
+                                        onPostClick = {
+                                            onNavigateToPostDetail(post.id, post.serverId)
+                                        },
+                                        onLikeClick = {
                                             viewModel.likePost(post.id)
                                         },
                                         onDislikeClick = {
@@ -206,6 +238,7 @@ fun FeedScreen(
                                             onNavigateToPostDetail(post.id, post.serverId)
                                         }
                                     )
+                                }
                             }
                         }
                     }
@@ -220,6 +253,39 @@ fun FeedScreen(
                         viewModel.clearError()
                     }
                 }
+            }
+            
+            // Diálogo de confirmación de eliminación
+            if (showDeleteDialog && postToDelete != null) {
+                androidx.compose.material3.AlertDialog(
+                    onDismissRequest = {
+                        showDeleteDialog = false
+                        postToDelete = null
+                    },
+                    title = { Text("Eliminar publicación") },
+                    text = { Text("¿Estás seguro de que deseas eliminar esta publicación? Esta acción no se puede deshacer.") },
+                    confirmButton = {
+                        androidx.compose.material3.TextButton(
+                            onClick = {
+                                viewModel.deletePost(postToDelete!!.id)
+                                showDeleteDialog = false
+                                postToDelete = null
+                            }
+                        ) {
+                            Text("Eliminar", color = MaterialTheme.colorScheme.error)
+                        }
+                    },
+                    dismissButton = {
+                        androidx.compose.material3.TextButton(
+                            onClick = {
+                                showDeleteDialog = false
+                                postToDelete = null
+                            }
+                        ) {
+                            Text("Cancelar")
+                        }
+                    }
+                )
             }
         }
     }
