@@ -148,6 +148,7 @@ class PostDetailViewModel @Inject constructor(
         commentsJob?.cancel()
         commentsJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoadingComments = true) }
+            
             android.util.Log.d("PostDetailViewModel", "Cargando comentarios para postId: $postId")
             commentRepository.getCommentsByPostId(postId).collect { comments ->
                 android.util.Log.d("PostDetailViewModel", "Comentarios recibidos: ${comments.size} para postId: $postId")
@@ -285,6 +286,8 @@ class PostDetailViewModel @Inject constructor(
 
             // Recargar comentarios después de crear uno nuevo
             if (result is Resource.Success) {
+                // Sincronizar comentarios pendientes antes de recargar
+                commentRepository.syncComments()
                 loadComments(post.id)
             }
         }

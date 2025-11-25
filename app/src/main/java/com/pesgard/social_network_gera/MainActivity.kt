@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import com.pesgard.social_network_gera.domain.repository.AuthRepository
+import com.pesgard.social_network_gera.domain.repository.CommentRepository
 import com.pesgard.social_network_gera.presentation.navigation.SetupNavigation
 import com.pesgard.social_network_gera.sync.SyncManager
 import com.pesgard.social_network_gera.ui.theme.ConnectaTheme
@@ -27,6 +28,9 @@ class MainActivity : ComponentActivity() {
     
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+    
+    @Inject
+    lateinit var commentRepository: CommentRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,8 +49,10 @@ class MainActivity : ComponentActivity() {
             networkMonitor.isOnline.collect { isOnline ->
                 if (isOnline && wasOffline) {
                     // Se reconectó a internet, sincronizar inmediatamente
-                    android.util.Log.d("MainActivity", "Conexión restaurada - Sincronizando inmediatamente")
+                    android.util.Log.d("MainActivity", "Conexión restaurada - Sincronizando posts y comentarios")
                     syncManager.syncNow()
+                    // También sincronizar comentarios pendientes
+                    commentRepository.syncComments()
                 }
                 wasOffline = !isOnline
             }
